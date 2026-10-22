@@ -4,6 +4,7 @@ using GestorTI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Velopack;
 
 namespace GestorTI;
 
@@ -15,6 +16,9 @@ public static class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Velopack: precisa ser a PRIMEIRA coisa do app (trata os comandos de instalar/atualizar/desinstalar).
+        VelopackApp.Build().Run();
+
         var pt = new CultureInfo("pt-BR");
         CultureInfo.DefaultThreadCurrentCulture = pt;
         CultureInfo.DefaultThreadCurrentUICulture = pt;

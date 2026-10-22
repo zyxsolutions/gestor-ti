@@ -3,7 +3,7 @@
 Sistema desktop (Windows) para gestão de uma operação de TI como MEI: clientes, contratos recorrentes (SLA), cobranças, fluxo de caixa e emissão de NFS-e. Inspirado conceitualmente na usabilidade do Asaas (layout limpo, menu lateral, cartões de indicadores) — sem usar marca, código ou ativos do Asaas.
 
 - **UI:** Avalonia 11 (XAML, tema Fluent) · MVVM com CommunityToolkit.Mvvm
-- **Dados:** SQLite local + EF Core 8 (`%LOCALAPPDATA%\GestorTI\gestor.db`)
+- **Dados:** SQLite local + EF Core 8 (`%LOCALAPPDATA%\GestorTI-Dados\gestor.db`)
 - **NFS-e:** Focus NFe (Padrão Nacional, `/v2/nfsen`) com fila offline-first e polling
 - **Backup:** `.zip` automático (snapshot do SQLite + pasta de notas) para o OneDrive
 - **Build:** GitHub Actions → um único `GestorTI.exe` (single-file, ReadyToRun, self-contained) em *Releases*
@@ -44,13 +44,21 @@ src/GestorTI/
 
 ## Backup
 
-`BackupService` usa a API de backup online do SQLite (cópia consistente com o app aberto), compacta junto com `NotasFiscais/` e move o `.zip` para a pasta de backup só ao final (o OneDrive nunca vê arquivo incompleto). Mantém os N mais recentes. Para restaurar: feche o app e extraia `gestor.db` para `%LOCALAPPDATA%\GestorTI\`.
+`BackupService` usa a API de backup online do SQLite (cópia consistente com o app aberto), compacta junto com `NotasFiscais/` e move o `.zip` para a pasta de backup só ao final (o OneDrive nunca vê arquivo incompleto). Mantém os N mais recentes. Para restaurar: feche o app e extraia `gestor.db` para `%LOCALAPPDATA%\GestorTI-Dados\`.
 
-## Build e release
+## Instalação e atualização automática
 
-Todo push na `main` dispara `.github/workflows/build.yml`: `dotnet publish -r win-x64 --self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true …` e publica `GestorTI.exe` em **Releases** (tag `v1.0.<run>`).
+Todo push na `main` dispara `.github/workflows/build.yml`, que publica o app (Windows x64, autocontido, ReadyToRun), empacota com o **Velopack** e cria um release com:
+- `GestorTI-win-Setup.exe` — instalador (instala por usuário, sem precisar de administrador; cria atalhos);
+- pacotes `.nupkg` (completo + delta) — usados para atualizar.
 
-Windows pode exibir o SmartScreen ("editor desconhecido") porque o `.exe` não é assinado; clique em *Mais informações → Executar assim mesmo*.
+**Primeira vez:** baixe e execute o `Setup.exe` da última release. **Depois:** o app confere o GitHub ao abrir e, havendo versão nova, mostra o botão verde "Atualizar para vX" no menu lateral — baixa só o que mudou e reinicia.
+
+- A versão é `1.0.<número do build>`, automática.
+- Seus dados ficam em `%LOCALAPPDATA%\GestorTI-Dados` (separado do programa), então atualizar/desinstalar não apaga nada.
+- O repositório precisa ser **público** para o app conseguir consultar as versões sem token. Se for privado no futuro, ajuste `UpdateService` (token no `GithubSource`) ou hospede as releases em um repositório/URL público separado.
+- O Windows pode exibir o SmartScreen na 1ª instalação (programa sem assinatura digital): *Mais informações → Executar assim mesmo*.
+- Rodando com `dotnet run` não há atualização (só no app instalado).
 
 ## Próximos passos sugeridos
 

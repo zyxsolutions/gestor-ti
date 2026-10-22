@@ -21,6 +21,7 @@ public static class Startup
         s.AddSingleton<CobrancaService>();
         s.AddSingleton<BackupService>();
         s.AddSingleton<PastasService>();
+        s.AddSingleton<UpdateService>();
         s.AddSingleton<NfseService>();
         s.AddHttpClient<INfseProvider, FocusNfeProvider>(); // HttpClient gerenciado (pool/DNS) pelo IHttpClientFactory
 

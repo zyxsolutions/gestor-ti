@@ -20,7 +20,11 @@
         <StackPanel DockPanel.Dock="Bottom" Spacing="4">
           <Button Classes="nav" Classes.active="{Binding IsConfiguracoes}"
                   Command="{Binding NavegarCommand}" CommandParameter="Configuracoes" Content="Configurações"/>
-          <TextBlock Text="v1.0 · dados locais (SQLite)" FontSize="11" Foreground="#8FA3D6" Margin="14,10,0,0"/>
+          <Button Classes="primary" Margin="0,8,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                  Background="#12B76A" Content="{Binding TextoAtualizacao}"
+                  IsVisible="{Binding AtualizacaoDisponivel}" IsEnabled="{Binding !Atualizando}"
+                  Command="{Binding AtualizarAppCommand}"/>
+          <TextBlock Text="{Binding VersaoTexto}" FontSize="11" Foreground="#8FA3D6" Margin="14,10,0,0"/>
         </StackPanel>
 
         <StackPanel Spacing="4">
