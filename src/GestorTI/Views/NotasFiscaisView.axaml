@@ -13,6 +13,40 @@
               Content="Sincronizar agora" Command="{Binding SincronizarCommand}"/>
     </Grid>
 
+    <!-- Pasta por cliente -->
+    <Border Classes="card">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="h2" Text="Pasta de notas por cliente"/>
+        <Grid ColumnDefinitions="2*,Auto,Auto,Auto">
+          <ComboBox ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSelecionado}"
+                    DisplayMemberBinding="{Binding Nome}" PlaceholderText="Selecione o cliente" Margin="0,0,12,0"/>
+          <Button Grid.Column="1" Classes="primary" Margin="0,0,8,0" Content="Criar pasta do cliente"
+                  IsEnabled="{Binding TemClienteSelecionado}" Command="{Binding CriarPastaClienteCommand}"/>
+          <Button Grid.Column="2" Classes="primary" Margin="0,0,8,0" Content="Importar NF do computador"
+                  IsEnabled="{Binding TemClienteSelecionado}" Click="OnImportarClick"/>
+          <Button Grid.Column="3" Classes="ghost" Content="Abrir pasta"
+                  IsEnabled="{Binding TemClienteSelecionado}" Command="{Binding AbrirPastaClienteCommand}"/>
+        </Grid>
+        <TextBlock Classes="label" Text="{Binding CaminhoPastaCliente}" TextWrapping="Wrap"/>
+        <TextBlock Classes="muted" Text="Nenhum arquivo nesta pasta." IsVisible="{Binding SemArquivos}"/>
+        <ItemsControl ItemsSource="{Binding ArquivosCliente}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="row">
+                <Grid ColumnDefinitions="3*,1.2*,0.8*,Auto">
+                  <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Nome}"/>
+                  <TextBlock Classes="cell" Grid.Column="1" Text="{Binding Data, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
+                  <TextBlock Classes="cell" Grid.Column="2" Text="{Binding Tamanho}"/>
+                  <Button Classes="ghost" Grid.Column="3" Content="Abrir"
+                          Command="{Binding $parent[UserControl].DataContext.AbrirArquivoCommand}" CommandParameter="{Binding}"/>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+
     <!-- Prontas para emitir -->
     <Border Classes="card">
       <StackPanel Spacing="12">

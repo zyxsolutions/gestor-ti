@@ -27,6 +27,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      # O restore precisa saber que vamos usar ReadyToRun (baixa o runtime pack correto).
       - name: Restaurar pacotes
         run: dotnet restore src/GestorTI/GestorTI.csproj -r win-x64 -p:PublishReadyToRun=true
 

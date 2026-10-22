@@ -28,7 +28,7 @@ src/GestorTI/
 3. **Clientes** → cadastre com endereço completo e código IBGE (exigido pela NFS-e).
 4. **Assinaturas** → crie contratos; as cobranças do mês são geradas sozinhas (e há o botão manual).
 5. **Cobranças e Extrato** → marque "Receber" (gera a entrada no caixa).
-6. **Notas Fiscais** → "Emitir NFS-e" nas cobranças pagas.
+6. **Notas Fiscais** → "Emitir NFS-e" nas cobranças pagas. Cada cliente tem sua pasta (`<PastaNotas>\Clientes\<Nome> - <CPF/CNPJ>`): use "Criar pasta do cliente" e "Importar NF do computador" para guardar PDFs/XMLs; as notas emitidas pela API caem nela automaticamente.
 
 ## NFS-e sem webhook (como funciona)
 
@@ -36,7 +36,7 @@ src/GestorTI/
 2. Antes de enviar, o app **consulta a referência** no provedor; se já existe, só adota o status → nunca duplica nota, mesmo após queda de internet/energia.
 3. Sem internet = a nota fica `Aguardando envio`; nada é perdido.
 4. Um serviço de background (`NfsePollingService`) roda a cada 60 s: reenvia pendentes e consulta as `Processando` até virarem `Autorizada`/`Rejeitada` (backoff de 10 min após 10 tentativas).
-5. Ao autorizar, baixa **PDF e XML** para `<PastaNotas>\AAAA\MM\`.
+5. Ao autorizar, baixa **PDF e XML** para a pasta do cliente (`<PastaNotas>\Clientes\<Nome> - <CPF/CNPJ>\`).
 
 > Alternativa a polling: expor um webhook local via túnel (Cloudflare Tunnel / Hookdeck CLI). Não é necessário e adiciona dependência; o polling é suficiente para o volume de um MEI.
 

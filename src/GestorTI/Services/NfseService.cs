@@ -21,13 +21,14 @@ public sealed class NfseService
     private readonly IDbContextFactory<AppDbContext> _factory;
     private readonly INfseProvider _provider;
     private readonly SettingsService _settings;
+    private readonly PastasService _pastas;
     private readonly ILogger<NfseService> _log;
     private readonly SemaphoreSlim _gate = new(1, 1); // evita UI e polling mexendo na mesma nota
 
     public NfseService(IDbContextFactory<AppDbContext> factory, INfseProvider provider,
-        SettingsService settings, ILogger<NfseService> log)
+        SettingsService settings, PastasService pastas, ILogger<NfseService> log)
     {
-        _factory = factory; _provider = provider; _settings = settings; _log = log;
+        _factory = factory; _provider = provider; _settings = settings; _pastas = pastas; _log = log;
     }
 
     /// <summary>Emite NFS-e para uma cobrança paga. Idempotente: não cria 2ª nota se já houver uma ativa.</summary>
@@ -172,12 +173,9 @@ public sealed class NfseService
 
     private async Task SalvarArquivosAsync(NotaFiscal nota, NfseResultado r, CancellationToken ct)
     {
-        var agora = DateTime.Now;
-        var pasta = Path.Combine(_settings.Current.PastaNotas, agora.ToString("yyyy"), agora.ToString("MM"));
-        Directory.CreateDirectory(pasta);
-
-        var cliente = nota.Cobranca?.Cliente?.Nome ?? "cliente";
-        var baseNome = $"NFSe-{nota.Numero ?? nota.Referencia}-{Sanitizar(cliente)}";
+        // Cada cliente tem sua pasta: <PastaNotas>\Clientes\<Nome> - <doc>\
+        var pasta = _pastas.Garantir(nota.Cobranca.Cliente);
+        var baseNome = $"NFSe-{PastasService.Sanitizar(nota.Numero ?? nota.Referencia)}-{DateTime.Now:yyyyMMdd}";
 
         // Falha ao baixar não invalida a nota (já autorizada): ficará sem caminho e pode ser rebaixada depois.
         try
@@ -239,12 +237,5 @@ public sealed class NfseService
             throw new InvalidOperationException("Informe o código IBGE (7 dígitos) do município emissor em Configurações.");
         if (string.IsNullOrWhiteSpace(cliente.CodigoMunicipioIbge))
             throw new InvalidOperationException($"Cadastre o código IBGE do município do cliente \"{cliente.Nome}\".");
-    }
-
-    private static string Sanitizar(string nome)
-    {
-        var invalidos = Path.GetInvalidFileNameChars();
-        var limpo = new string(nome.Select(c => invalidos.Contains(c) ? '_' : c).ToArray()).Trim();
-        return limpo.Length > 40 ? limpo[..40] : limpo;
     }
 }
