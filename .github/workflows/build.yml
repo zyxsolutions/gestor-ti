@@ -28,7 +28,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restaurar pacotes
-        run: dotnet restore src/GestorTI/GestorTI.csproj -r win-x64
+        run: dotnet restore src/GestorTI/GestorTI.csproj -r win-x64 -p:PublishReadyToRun=true
 
       # Um único .exe, autocontido (não exige instalar o .NET), com ReadyToRun (abertura mais rápida)
       # e compressão. IncludeNativeLibrariesForSelfExtract embute as DLLs nativas (SQLite, Skia).
