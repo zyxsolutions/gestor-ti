@@ -1,12 +1,15 @@
 # Gestor TI
 
+> ### ⬇️ [Baixar o instalador (Windows)](https://github.com/zyxsolutions/gestor-ti/releases/latest/download/GestorTI-win-Setup.exe)
+> Se o link direto não abrir, use a [página de versões](https://github.com/zyxsolutions/gestor-ti/releases/latest) e baixe o arquivo `GestorTI-win-Setup.exe`. Depois da primeira instalação o app se atualiza sozinho.
+
 Sistema desktop (Windows) para gestão de uma operação de TI como MEI: clientes, contratos recorrentes (SLA), cobranças, fluxo de caixa e emissão de NFS-e. Inspirado conceitualmente na usabilidade do Asaas (layout limpo, menu lateral, cartões de indicadores) — sem usar marca, código ou ativos do Asaas.
 
 - **UI:** Avalonia 11 (XAML, tema Fluent) · MVVM com CommunityToolkit.Mvvm
 - **Dados:** SQLite local + EF Core 8 (`%LOCALAPPDATA%\GestorTI-Dados\gestor.db`)
 - **NFS-e:** Focus NFe (Padrão Nacional, `/v2/nfsen`) com fila offline-first e polling
 - **Backup:** `.zip` automático (snapshot do SQLite + pasta de notas) para o OneDrive
-- **Build:** GitHub Actions → um único `GestorTI.exe` (single-file, ReadyToRun, self-contained) em *Releases*
+- **Build/instalação:** GitHub Actions → instalador `GestorTI-win-Setup.exe` (Velopack, ReadyToRun, self-contained) em *Releases*, com atualização automática
 
 ## Estrutura
 
