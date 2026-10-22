@@ -1,0 +1,11 @@
+bin/
+obj/
+publish/
+.vs/
+.idea/
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+settings.json

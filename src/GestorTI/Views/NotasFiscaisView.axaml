@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.NotasFiscaisView">
+  <StackPanel Spacing="24">
+    <Grid ColumnDefinitions="*,Auto,Auto">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="h1" Text="Notas Fiscais (NFS-e)"/>
+        <TextBlock Classes="muted" Text="Emissão pelo Padrão Nacional via API · PDFs e XMLs salvos na sua pasta do Windows"/>
+      </StackPanel>
+      <Button Grid.Column="1" Classes="ghost" VerticalAlignment="Center" Margin="0,0,8,0"
+              Content="Abrir pasta de notas" Command="{Binding AbrirPastaCommand}"/>
+      <Button Grid.Column="2" Classes="primary" VerticalAlignment="Center"
+              Content="Sincronizar agora" Command="{Binding SincronizarCommand}"/>
+    </Grid>
+
+    <!-- Prontas para emitir -->
+    <Border Classes="card">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="h2" Text="Prontas para emitir (cobranças pagas sem nota)"/>
+        <TextBlock Classes="muted" Text="Nenhuma cobrança paga aguardando nota." IsVisible="{Binding SemProntas}"/>
+        <ItemsControl ItemsSource="{Binding ProntasParaEmitir}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="row">
+                <Grid ColumnDefinitions="1.5*,2.5*,1*,1*,Auto">
+                  <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Cliente.Nome}"/>
+                  <TextBlock Classes="cell" Grid.Column="1" Text="{Binding Descricao}"/>
+                  <TextBlock Classes="cell" Grid.Column="2" Text="{Binding DataPagamento, StringFormat={}{0:dd/MM/yyyy}}"/>
+                  <TextBlock Classes="cell" Grid.Column="3" Text="{Binding Valor, StringFormat={}{0:C}}"/>
+                  <Button Classes="primary" Grid.Column="4" Content="Emitir NFS-e"
+                          Command="{Binding $parent[UserControl].DataContext.EmitirCommand}" CommandParameter="{Binding}"/>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+
+    <!-- Notas emitidas -->
+    <Border Classes="card">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="h2" Text="Notas emitidas"/>
+        <Grid ColumnDefinitions="0.8*,1.6*,1*,Auto,2*,Auto">
+          <TextBlock Classes="th" Text="NÚMERO"/>
+          <TextBlock Classes="th" Grid.Column="1" Text="CLIENTE"/>
+          <TextBlock Classes="th" Grid.Column="2" Text="VALOR"/>
+          <TextBlock Classes="th" Grid.Column="3" Text="STATUS" Width="130"/>
+          <TextBlock Classes="th" Grid.Column="4" Text="OBSERVAÇÃO"/>
+        </Grid>
+        <ItemsControl ItemsSource="{Binding Notas}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="row">
+                <Grid ColumnDefinitions="0.8*,1.6*,1*,Auto,2*,Auto">
+                  <TextBlock Classes="cell" Text="{Binding Numero}"/>
+                  <TextBlock Classes="cell" Grid.Column="1" FontWeight="SemiBold" Text="{Binding Cobranca.Cliente.Nome}"/>
+                  <TextBlock Classes="cell" Grid.Column="2" Text="{Binding ValorServicos, StringFormat={}{0:C}}"/>
+                  <Border Classes="badge" Grid.Column="3" Width="130"
+                          Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                    <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                               Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                  </Border>
+                  <TextBlock Classes="cell" Grid.Column="4" Margin="12,0" Text="{Binding Mensagem}" ToolTip.Tip="{Binding Mensagem}"/>
+                  <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="2">
+                    <Button Classes="ghost" Content="Atualizar" IsEnabled="{Binding EmAndamento}"
+                            Command="{Binding $parent[UserControl].DataContext.AtualizarCommand}" CommandParameter="{Binding}"/>
+                    <Button Classes="ghost" Content="PDF" IsEnabled="{Binding TemPdf}"
+                            Command="{Binding $parent[UserControl].DataContext.AbrirPdfCommand}" CommandParameter="{Binding}"/>
+                    <Button Classes="ghost" Content="XML" IsEnabled="{Binding TemXml}"
+                            Command="{Binding $parent[UserControl].DataContext.AbrirXmlCommand}" CommandParameter="{Binding}"/>
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

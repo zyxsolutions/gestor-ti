@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.ConfiguracoesView">
+  <StackPanel Spacing="24" MaxWidth="900" HorizontalAlignment="Left">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Configurações"/>
+      <TextBlock Classes="muted" Text="Emissor de NFS-e, pastas e backup"/>
+    </StackPanel>
+
+    <Border Classes="card">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="Emissor de NFS-e (Focus NFe)"/>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Ambiente"/>
+            <ComboBox ItemsSource="{Binding Ambientes}" SelectedItem="{Binding Ambiente}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Token da API (guardado criptografado)"/>
+            <TextBox Text="{Binding Token}" PasswordChar="●"/>
+          </StackPanel>
+        </Grid>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="CNPJ do prestador (MEI)"/>
+            <TextBox Text="{Binding CnpjPrestador}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Inscrição municipal (se houver)"/>
+            <TextBox Text="{Binding InscricaoMunicipal}"/>
+          </StackPanel>
+        </Grid>
+        <Grid ColumnDefinitions="*,*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Município emissor (IBGE, 7 dígitos)"/>
+            <TextBox Text="{Binding CodigoMunicipioEmissor}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Cód. tributação nacional (ex.: 010701)"/>
+            <TextBox Text="{Binding CodigoTributacaoNacional}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="2" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Código NBS (opcional)"/>
+            <TextBox Text="{Binding CodigoNbs}"/>
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="Pastas e backup"/>
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label" Text="Pasta das notas fiscais (PDF/XML)"/>
+          <TextBox Text="{Binding PastaNotas}"/>
+        </StackPanel>
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label" Text="Pasta de backup (ex.: dentro do OneDrive)"/>
+          <TextBox Text="{Binding PastaBackup}"/>
+        </StackPanel>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Backup automático a cada (horas)"/>
+            <NumericUpDown Value="{Binding BackupIntervaloHoras}" Minimum="1" Maximum="720" FormatString="N0"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Manter os últimos (arquivos)"/>
+            <NumericUpDown Value="{Binding BackupRetencao}" Minimum="1" Maximum="365" FormatString="N0"/>
+          </StackPanel>
+        </Grid>
+        <TextBlock Classes="muted" Text="{Binding UltimoBackup}"/>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Orientation="Horizontal" Spacing="12">
+      <Button Classes="primary" Content="Salvar configurações" Command="{Binding SalvarCommand}"/>
+      <Button Classes="ghost" Content="Fazer backup agora" Command="{Binding BackupAgoraCommand}"/>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="GestorTI.Views.MainWindow"
+        Title="Gestor TI"
+        Width="1280" Height="800" MinWidth="1000" MinHeight="640"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource PageBrush}">
+
+  <Grid ColumnDefinitions="248,*">
+
+    <!-- ===== Menu lateral ===== -->
+    <Border Background="{DynamicResource SidebarBrush}" Padding="16">
+      <DockPanel LastChildFill="True">
+
+        <StackPanel DockPanel.Dock="Top" Margin="8,8,0,28" Spacing="2">
+          <TextBlock Text="Gestor TI" FontSize="22" FontWeight="Bold" Foreground="White"/>
+          <TextBlock Text="Operação de infraestrutura" FontSize="12" Foreground="#8FA3D6"/>
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Spacing="4">
+          <Button Classes="nav" Classes.active="{Binding IsConfiguracoes}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Configuracoes" Content="Configurações"/>
+          <TextBlock Text="v1.0 · dados locais (SQLite)" FontSize="11" Foreground="#8FA3D6" Margin="14,10,0,0"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+          <Button Classes="nav" Classes.active="{Binding IsDashboard}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Dashboard" Content="Início"/>
+          <Button Classes="nav" Classes.active="{Binding IsClientes}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Clientes" Content="Clientes"/>
+          <Button Classes="nav" Classes.active="{Binding IsContratos}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Contratos" Content="Assinaturas (Contratos)"/>
+          <Button Classes="nav" Classes.active="{Binding IsFinanceiro}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Financeiro" Content="Cobranças e Extrato"/>
+          <Button Classes="nav" Classes.active="{Binding IsNotasFiscais}"
+                  Command="{Binding NavegarCommand}" CommandParameter="NotasFiscais" Content="Notas Fiscais"/>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- ===== Área principal ===== -->
+    <DockPanel Grid.Column="1">
+      <Border DockPanel.Dock="Top"
+              IsVisible="{Binding PaginaAtual.TemMensagem, FallbackValue=False}"
+              Background="#FFF4DB" BorderBrush="#F5D58A" BorderThickness="0,0,0,1" Padding="32,12">
+        <TextBlock Text="{Binding PaginaAtual.Mensagem}" Foreground="#7A4B00" TextWrapping="Wrap"/>
+      </Border>
+      <ScrollViewer>
+        <ContentControl Content="{Binding PaginaAtual}" Margin="32"/>
+      </ScrollViewer>
+    </DockPanel>
+  </Grid>
+</Window>

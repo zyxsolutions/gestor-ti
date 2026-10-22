@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.ClientesView">
+  <StackPanel Spacing="24">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Clientes"/>
+      <TextBlock Classes="muted" Text="Cadastro de clientes (tomadores dos serviços e das notas fiscais)"/>
+    </StackPanel>
+
+    <Grid ColumnDefinitions="*,360">
+      <!-- Lista -->
+      <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+        <StackPanel>
+          <Grid ColumnDefinitions="2*,1.4*,1.6*,Auto" Margin="0,0,0,8">
+            <TextBlock Classes="th" Text="NOME"/>
+            <TextBlock Classes="th" Grid.Column="1" Text="CPF/CNPJ"/>
+            <TextBlock Classes="th" Grid.Column="2" Text="CONTATO"/>
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Clientes}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row">
+                  <Grid ColumnDefinitions="2*,1.4*,1.6*,Auto">
+                    <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Nome}"/>
+                    <TextBlock Classes="cell" Grid.Column="1" Text="{Binding DocumentoFormatado}"/>
+                    <TextBlock Classes="cell" Grid.Column="2" Text="{Binding Contato}"/>
+                    <Button Classes="ghost" Grid.Column="3" Content="Excluir"
+                            Command="{Binding $parent[UserControl].DataContext.RemoverCommand}"
+                            CommandParameter="{Binding}"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <!-- Formulário -->
+      <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="Novo cliente"/>
+          <TextBox Watermark="Nome / Razão social" Text="{Binding Nome}"/>
+          <TextBox Watermark="CPF ou CNPJ" Text="{Binding CpfCnpj}"/>
+          <TextBox Watermark="E-mail" Text="{Binding Email}"/>
+          <TextBox Watermark="Telefone" Text="{Binding Telefone}"/>
+          <TextBlock Classes="label" Text="Endereço (necessário para emitir NFS-e)" Margin="0,6,0,0"/>
+          <Grid ColumnDefinitions="*,*" >
+            <TextBox Watermark="CEP" Text="{Binding Cep}" Margin="0,0,5,0"/>
+            <TextBox Grid.Column="1" Watermark="UF" Text="{Binding Uf}" Margin="5,0,0,0"/>
+          </Grid>
+          <TextBox Watermark="Logradouro" Text="{Binding Logradouro}"/>
+          <Grid ColumnDefinitions="*,2*">
+            <TextBox Watermark="Número" Text="{Binding Numero}" Margin="0,0,5,0"/>
+            <TextBox Grid.Column="1" Watermark="Bairro" Text="{Binding Bairro}" Margin="5,0,0,0"/>
+          </Grid>
+          <TextBox Watermark="Código IBGE do município (7 dígitos)" Text="{Binding CodigoMunicipioIbge}"/>
+          <Button Classes="primary" Content="Salvar cliente" Command="{Binding SalvarCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

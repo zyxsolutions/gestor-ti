@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.DashboardView">
+  <StackPanel Spacing="24">
+
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Início"/>
+      <TextBlock Classes="muted" Text="Resumo financeiro e contratos da sua operação"/>
+    </StackPanel>
+
+    <!-- KPIs -->
+    <Grid ColumnDefinitions="*,*,*,*">
+      <Border Classes="card" Grid.Column="0" Margin="0,0,16,0">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="Saldo em caixa"/>
+          <TextBlock Classes="kpi" Text="{Binding SaldoCaixa, StringFormat={}{0:C}}"/>
+          <TextBlock Classes="label" Text="Entradas − saídas realizadas"/>
+        </StackPanel>
+      </Border>
+      <Border Classes="card" Grid.Column="1" Margin="0,0,16,0">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="Receita recorrente (MRR)"/>
+          <TextBlock Classes="kpi" Text="{Binding Mrr, StringFormat={}{0:C}}"/>
+          <TextBlock Classes="label" Text="Contratos ativos, por mês"/>
+        </StackPanel>
+      </Border>
+      <Border Classes="card" Grid.Column="2" Margin="0,0,16,0">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="Inadimplência"/>
+          <TextBlock Classes="kpi" Foreground="#B42318" Text="{Binding InadimplenciaValor, StringFormat={}{0:C}}"/>
+          <TextBlock Classes="label" Text="{Binding InadimplenciaPercentual, StringFormat={}{0:N1}% do cobrado}"/>
+        </StackPanel>
+      </Border>
+      <Border Classes="card" Grid.Column="3">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="A receber no mês"/>
+          <TextBlock Classes="kpi" Text="{Binding AReceberMes, StringFormat={}{0:C}}"/>
+          <TextBlock Classes="label" Text="{Binding RecebidoMes, StringFormat=Já recebido: {0:C}}"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Grid ColumnDefinitions="3*,2*">
+
+      <!-- Gráfico: entradas x saídas -->
+      <Border Classes="card" Margin="0,0,16,0">
+        <StackPanel Spacing="16">
+          <StackPanel Orientation="Horizontal" Spacing="16">
+            <TextBlock Classes="h2" Text="Entradas x Saídas"/>
+            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+              <Border Width="10" Height="10" CornerRadius="2" Background="#12B76A"/>
+              <TextBlock Classes="label" Text="Entradas"/>
+              <Border Width="10" Height="10" CornerRadius="2" Background="#F04438" Margin="8,0,0,0"/>
+              <TextBlock Classes="label" Text="Saídas"/>
+            </StackPanel>
+          </StackPanel>
+
+          <ItemsControl ItemsSource="{Binding Barras}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                  <StackPanel Orientation="Horizontal" Spacing="6" Height="170" HorizontalAlignment="Center">
+                    <Border Width="24" Height="{Binding AlturaEntrada}" VerticalAlignment="Bottom"
+                            Background="#12B76A" CornerRadius="4,4,0,0"
+                            ToolTip.Tip="{Binding Entradas, StringFormat=Entradas: {0:C}}"/>
+                    <Border Width="24" Height="{Binding AlturaSaida}" VerticalAlignment="Bottom"
+                            Background="#F04438" CornerRadius="4,4,0,0"
+                            ToolTip.Tip="{Binding Saidas, StringFormat=Saídas: {0:C}}"/>
+                  </StackPanel>
+                  <TextBlock Classes="label" Text="{Binding Mes}" HorizontalAlignment="Center"/>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <!-- Contratos vencendo -->
+      <Border Classes="card" Grid.Column="1">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="h2" Text="Contratos vencendo (60 dias)"/>
+          <TextBlock Classes="muted" Text="Nenhum contrato próximo do vencimento." IsVisible="{Binding SemAlertas}"/>
+          <ItemsControl ItemsSource="{Binding ContratosVencendo}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="2">
+                      <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Cliente}"/>
+                      <TextBlock Classes="label" Text="{Binding Descricao}" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" Spacing="2">
+                      <TextBlock Classes="cell" Text="{Binding Texto}" HorizontalAlignment="Right"/>
+                      <TextBlock Classes="label" Text="{Binding DataFim, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

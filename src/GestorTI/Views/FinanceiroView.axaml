@@ -1,0 +1,121 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.FinanceiroView">
+  <StackPanel Spacing="24">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Cobranças e Extrato"/>
+      <TextBlock Classes="muted" Text="Controle de cobranças, recebimentos e fluxo de caixa"/>
+    </StackPanel>
+
+    <TabControl>
+
+      <!-- ===== Cobranças ===== -->
+      <TabItem Header="Cobranças">
+        <Grid ColumnDefinitions="*,340" Margin="0,16,0,0">
+          <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+            <StackPanel Spacing="12">
+              <Grid ColumnDefinitions="Auto,200">
+                <TextBlock Classes="h2" Text="Cobranças" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding Filtros}" SelectedItem="{Binding FiltroSelecionado}"/>
+              </Grid>
+              <Grid ColumnDefinitions="1.5*,2*,1*,1*,Auto,Auto,Auto">
+                <TextBlock Classes="th" Text="CLIENTE"/>
+                <TextBlock Classes="th" Grid.Column="1" Text="DESCRIÇÃO"/>
+                <TextBlock Classes="th" Grid.Column="2" Text="VENCIMENTO"/>
+                <TextBlock Classes="th" Grid.Column="3" Text="VALOR"/>
+                <TextBlock Classes="th" Grid.Column="4" Text="STATUS" Width="90"/>
+              </Grid>
+              <ItemsControl ItemsSource="{Binding Cobrancas}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Classes="row">
+                      <Grid ColumnDefinitions="1.5*,2*,1*,1*,Auto,Auto,Auto">
+                        <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Cliente.Nome}"/>
+                        <TextBlock Classes="cell" Grid.Column="1" Text="{Binding Descricao}"/>
+                        <TextBlock Classes="cell" Grid.Column="2" Text="{Binding Vencimento, StringFormat={}{0:dd/MM/yyyy}}"/>
+                        <TextBlock Classes="cell" Grid.Column="3" Text="{Binding Valor, StringFormat={}{0:C}}"/>
+                        <Border Classes="badge" Grid.Column="4" Width="90"
+                                Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                          <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                                     Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                        </Border>
+                        <Button Classes="ghost" Grid.Column="5" Content="Receber" IsEnabled="{Binding PodeReceber}"
+                                Command="{Binding $parent[UserControl].DataContext.ReceberCommand}" CommandParameter="{Binding}"/>
+                        <Button Classes="ghost" Grid.Column="6" Content="Cancelar" IsEnabled="{Binding PodeReceber}"
+                                Command="{Binding $parent[UserControl].DataContext.CancelarCommand}" CommandParameter="{Binding}"/>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="h2" Text="Nova cobrança avulsa"/>
+              <ComboBox ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSelecionado}"
+                        DisplayMemberBinding="{Binding Nome}" PlaceholderText="Cliente"/>
+              <TextBox Watermark="Descrição" Text="{Binding DescricaoCobranca}"/>
+              <NumericUpDown Value="{Binding ValorCobranca}" Minimum="0" Increment="50" FormatString="N2" ShowButtonSpinner="False" Watermark="Valor (R$)"/>
+              <TextBlock Classes="label" Text="Vencimento"/>
+              <CalendarDatePicker SelectedDate="{Binding VencimentoCobranca}" HorizontalAlignment="Stretch"/>
+              <Button Classes="primary" Content="Criar cobrança" Command="{Binding NovaCobrancaCommand}"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- ===== Extrato / Fluxo de caixa ===== -->
+      <TabItem Header="Extrato (fluxo de caixa)">
+        <Grid ColumnDefinitions="*,340" Margin="0,16,0,0">
+          <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+            <StackPanel Spacing="12">
+              <TextBlock Classes="h2" Text="Movimentações"/>
+              <Grid ColumnDefinitions="1*,2.2*,1.4*,1.2*,Auto">
+                <TextBlock Classes="th" Text="DATA"/>
+                <TextBlock Classes="th" Grid.Column="1" Text="DESCRIÇÃO"/>
+                <TextBlock Classes="th" Grid.Column="2" Text="CATEGORIA"/>
+                <TextBlock Classes="th" Grid.Column="3" Text="VALOR"/>
+                <TextBlock Classes="th" Grid.Column="4" Text="TIPO" Width="80"/>
+              </Grid>
+              <ItemsControl ItemsSource="{Binding Lancamentos}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Classes="row">
+                      <Grid ColumnDefinitions="1*,2.2*,1.4*,1.2*,Auto">
+                        <TextBlock Classes="cell" Text="{Binding Data, StringFormat={}{0:dd/MM/yyyy}}"/>
+                        <TextBlock Classes="cell" Grid.Column="1" Text="{Binding Descricao}"/>
+                        <TextBlock Classes="cell" Grid.Column="2" Text="{Binding Categoria}"/>
+                        <TextBlock Classes="cell" Grid.Column="3" FontWeight="SemiBold" Text="{Binding ValorComSinal, StringFormat={}{0:C}}"/>
+                        <Border Classes="badge" Grid.Column="4" Width="80"
+                                Background="{Binding TipoTexto, Converter={StaticResource StatusBrush}}">
+                          <TextBlock Classes="cell" FontSize="12" Text="{Binding TipoTexto}"
+                                     Foreground="{Binding TipoTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                        </Border>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+              <TextBlock Classes="h2" Text="Novo lançamento"/>
+              <ComboBox ItemsSource="{Binding TiposLancamento}" SelectedItem="{Binding TipoLancamento}"/>
+              <TextBox Watermark="Descrição (ex.: Licença Microsoft 365)" Text="{Binding DescricaoLancamento}"/>
+              <TextBox Watermark="Categoria (ex.: Software, Impostos, Equipamentos)" Text="{Binding CategoriaLancamento}"/>
+              <NumericUpDown Value="{Binding ValorLancamento}" Minimum="0" Increment="10" FormatString="N2" ShowButtonSpinner="False" Watermark="Valor (R$)"/>
+              <CalendarDatePicker SelectedDate="{Binding DataLancamento}" HorizontalAlignment="Stretch"/>
+              <Button Classes="primary" Content="Registrar" Command="{Binding NovoLancamentoCommand}"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+    </TabControl>
+  </StackPanel>
+</UserControl>

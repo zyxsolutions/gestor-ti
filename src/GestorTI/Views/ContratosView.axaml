@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.ContratosView">
+  <StackPanel Spacing="24">
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="h1" Text="Assinaturas (Contratos de TI)"/>
+        <TextBlock Classes="muted" Text="Contratos recorrentes: geram cobranças automaticamente"/>
+      </StackPanel>
+      <Button Grid.Column="1" Classes="primary" VerticalAlignment="Center"
+              Content="Gerar cobranças do mês" Command="{Binding GerarCobrancasCommand}"/>
+    </Grid>
+
+    <Border Classes="card" Background="#FFF4DB" BorderBrush="#F5D58A" IsVisible="{Binding TemVencendo}">
+      <TextBlock Foreground="#7A4B00" Text="{Binding Vencendo, StringFormat=Atenção: {0} contrato(s) vencendo em até 60 dias.}"/>
+    </Border>
+
+    <Grid ColumnDefinitions="*,360">
+      <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+        <StackPanel>
+          <Grid ColumnDefinitions="1.6*,1.6*,1.1*,0.6*,1.1*,Auto,Auto" Margin="0,0,0,8">
+            <TextBlock Classes="th" Text="CLIENTE"/>
+            <TextBlock Classes="th" Grid.Column="1" Text="SERVIÇO"/>
+            <TextBlock Classes="th" Grid.Column="2" Text="VALOR"/>
+            <TextBlock Classes="th" Grid.Column="3" Text="SLA"/>
+            <TextBlock Classes="th" Grid.Column="4" Text="VIGÊNCIA"/>
+            <TextBlock Classes="th" Grid.Column="5" Text="STATUS" Width="90"/>
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Contratos}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row">
+                  <Grid ColumnDefinitions="1.6*,1.6*,1.1*,0.6*,1.1*,Auto,Auto">
+                    <TextBlock Classes="cell" FontWeight="SemiBold" Text="{Binding Cliente.Nome}"/>
+                    <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
+                      <TextBlock Classes="cell" Text="{Binding Descricao}"/>
+                      <TextBlock Classes="label" Text="{Binding Tipo}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="1" VerticalAlignment="Center">
+                      <TextBlock Classes="cell" Text="{Binding Valor, StringFormat={}{0:C}}"/>
+                      <TextBlock Classes="label" Text="{Binding Periodicidade}"/>
+                    </StackPanel>
+                    <TextBlock Classes="cell" Grid.Column="3" Text="{Binding SlaTexto}"/>
+                    <TextBlock Classes="cell" Grid.Column="4" Text="{Binding VigenciaTexto}"/>
+                    <Border Classes="badge" Grid.Column="5" Width="90"
+                            Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                      <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                                 Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                    </Border>
+                    <Button Classes="ghost" Grid.Column="6" Content="Encerrar"
+                            Command="{Binding $parent[UserControl].DataContext.EncerrarCommand}"
+                            CommandParameter="{Binding}"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="Novo contrato"/>
+          <ComboBox ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSelecionado}"
+                    DisplayMemberBinding="{Binding Nome}" PlaceholderText="Cliente"/>
+          <TextBox Watermark="Descrição (ex.: Suporte técnico mensal)" Text="{Binding Descricao}"/>
+          <ComboBox ItemsSource="{Binding Tipos}" SelectedItem="{Binding TipoSelecionado}"/>
+          <Grid ColumnDefinitions="*,*">
+            <StackPanel Margin="0,0,5,0" Spacing="4">
+              <TextBlock Classes="label" Text="Valor (R$)"/>
+              <NumericUpDown Value="{Binding Valor}" Minimum="0" Increment="50" FormatString="N2" ShowButtonSpinner="False"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,0,0" Spacing="4">
+              <TextBlock Classes="label" Text="Periodicidade"/>
+              <ComboBox ItemsSource="{Binding Periodicidades}" SelectedItem="{Binding PeriodicidadeSelecionada}"/>
+            </StackPanel>
+          </Grid>
+          <Grid ColumnDefinitions="*,*">
+            <StackPanel Margin="0,0,5,0" Spacing="4">
+              <TextBlock Classes="label" Text="SLA – resposta (horas)"/>
+              <NumericUpDown Value="{Binding SlaHoras}" Minimum="1" Maximum="720" FormatString="N0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,0,0" Spacing="4">
+              <TextBlock Classes="label" Text="Dia do vencimento"/>
+              <NumericUpDown Value="{Binding DiaVencimento}" Minimum="1" Maximum="31" FormatString="N0"/>
+            </StackPanel>
+          </Grid>
+          <TextBox Watermark="Observações do SLA" Text="{Binding SlaObservacoes}"/>
+          <TextBlock Classes="label" Text="Início"/>
+          <CalendarDatePicker SelectedDate="{Binding DataInicio}" HorizontalAlignment="Stretch"/>
+          <TextBlock Classes="label" Text="Fim da vigência (opcional)"/>
+          <CalendarDatePicker SelectedDate="{Binding DataFim}" HorizontalAlignment="Stretch"/>
+          <Button Classes="primary" Content="Criar contrato" Command="{Binding SalvarCommand}"
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>
