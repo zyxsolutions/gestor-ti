@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.ContaView">
+  <StackPanel Spacing="24" MaxWidth="640" HorizontalAlignment="Left">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Minha conta"/>
+      <TextBlock Classes="muted" Text="Seus dados de acesso e troca de senha"/>
+    </StackPanel>
+
+    <Border Classes="card">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="h2" Text="Dados"/>
+        <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto">
+          <TextBlock Classes="label" Text="Nome" Margin="0,4"/>
+          <TextBlock Classes="cell" Grid.Column="1" Text="{Binding Nome}"/>
+          <TextBlock Classes="label" Grid.Row="1" Text="Usuário" Margin="0,4"/>
+          <TextBlock Classes="cell" Grid.Row="1" Grid.Column="1" Text="{Binding Login}"/>
+          <TextBlock Classes="label" Grid.Row="2" Text="Perfil" Margin="0,4"/>
+          <TextBlock Classes="cell" Grid.Row="2" Grid.Column="1" Text="{Binding Perfil}"/>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="Alterar senha"/>
+        <StackPanel Spacing="4">
+          <TextBlock Classes="label" Text="Senha atual"/>
+          <TextBox Text="{Binding SenhaAtual}" PasswordChar="●"/>
+        </StackPanel>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Nova senha (mín. 8 caracteres)"/>
+            <TextBox Text="{Binding NovaSenha}" PasswordChar="●"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Confirmar nova senha"/>
+            <TextBox Text="{Binding ConfirmarNova}" PasswordChar="●"/>
+          </StackPanel>
+        </Grid>
+        <Button Classes="primary" HorizontalAlignment="Left" Content="Alterar senha" Command="{Binding AlterarSenhaCommand}"/>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

@@ -9,11 +9,15 @@ public partial class ConfiguracoesViewModel : ViewModelBase
     private readonly SettingsService _settings;
     private readonly BackupService _backup;
 
-    public ConfiguracoesViewModel(SettingsService settings, BackupService backup)
+    public ConfiguracoesViewModel(SettingsService settings, BackupService backup, UsuariosViewModel usuarios)
     {
         _settings = settings;
         _backup = backup;
+        Usuarios = usuarios;
     }
+
+    /// <summary>Aba "Usuários" (criar, editar, excluir).</summary>
+    public UsuariosViewModel Usuarios { get; }
 
     public string[] Ambientes { get; } = { "homologacao", "producao" };
 
@@ -30,7 +34,7 @@ public partial class ConfiguracoesViewModel : ViewModelBase
     [ObservableProperty] private decimal? _backupRetencao = 14;
     [ObservableProperty] private string _ultimoBackup = "";
 
-    public override Task CarregarAsync()
+    public override async Task CarregarAsync()
     {
         var s = _settings.Current;
         Ambiente = s.Ambiente;
@@ -45,7 +49,7 @@ public partial class ConfiguracoesViewModel : ViewModelBase
         BackupIntervaloHoras = s.BackupIntervaloHoras;
         BackupRetencao = s.BackupRetencao;
         AtualizarUltimoBackup();
-        return Task.CompletedTask;
+        await Usuarios.CarregarAsync();
     }
 
     private void AtualizarUltimoBackup() =>

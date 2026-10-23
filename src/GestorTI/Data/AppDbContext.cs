@@ -17,9 +17,16 @@ public class AppDbContext : DbContext
     public DbSet<Cobranca> Cobrancas => Set<Cobranca>();
     public DbSet<LancamentoCaixa> Lancamentos => Set<LancamentoCaixa>();
     public DbSet<NotaFiscal> Notas => Set<NotaFiscal>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
+        b.Entity<Usuario>(e =>
+        {
+            e.Property(x => x.Perfil).HasConversion<string>().HasMaxLength(30);
+            e.HasIndex(x => x.Login).IsUnique();
+        });
+
         b.Entity<Cliente>(e =>
         {
             e.HasIndex(x => x.CpfCnpj).IsUnique();

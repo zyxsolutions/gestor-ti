@@ -1,23 +1,45 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GestorTI.Models;
 using GestorTI.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GestorTI.ViewModels;
 
-/// <summary>Navegação do menu lateral: troca a ViewModel exibida na área principal.</summary>
+/// <summary>
+/// Janela principal: mostra a tela de login até alguém entrar; depois, o sistema com o menu lateral.
+/// A navegação respeita o perfil (Configurações só para administradores).
+/// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IServiceProvider _sp;
-
     private readonly UpdateService _updates;
+    private readonly SessaoService _sessao;
+    private bool _jaVerificouAtualizacao;
 
-    public MainWindowViewModel(IServiceProvider sp, UpdateService updates)
+    public MainWindowViewModel(IServiceProvider sp, UpdateService updates, LoginViewModel login, SessaoService sessao)
     {
         _sp = sp;
         _updates = updates;
+        _sessao = sessao;
+        Login = login;
         VersaoTexto = "v" + updates.Versao;
+        login.LoginConcluido += OnLoginConcluido;
     }
+
+    public LoginViewModel Login { get; }
+
+    // ---- Sessão ----
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NaoAutenticado))]
+    private bool _autenticado;
+
+    public bool NaoAutenticado => !Autenticado;
+
+    [ObservableProperty] private string _usuarioNome = "";
+    [ObservableProperty] private string _perfilTexto = "";
+    [ObservableProperty] private string _iniciais = "";
+    [ObservableProperty] private bool _ehAdmin;
 
     // ---- Atualização automática ----
     [ObservableProperty] private string _versaoTexto = "";
@@ -55,6 +77,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    // ---- Navegação ----
     [ObservableProperty] private ViewModelBase? _paginaAtual;
 
     [ObservableProperty]
@@ -64,6 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(IsFinanceiro))]
     [NotifyPropertyChangedFor(nameof(IsNotasFiscais))]
     [NotifyPropertyChangedFor(nameof(IsConfiguracoes))]
+    [NotifyPropertyChangedFor(nameof(IsConta))]
     private string _paginaAtiva = "";
 
     public bool IsDashboard => PaginaAtiva == "Dashboard";
@@ -72,16 +96,49 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsFinanceiro => PaginaAtiva == "Financeiro";
     public bool IsNotasFiscais => PaginaAtiva == "NotasFiscais";
     public bool IsConfiguracoes => PaginaAtiva == "Configuracoes";
+    public bool IsConta => PaginaAtiva == "Conta";
 
-    public async Task IniciarAsync()
+    /// <summary>Chamado ao abrir a janela: prepara a tela de login.</summary>
+    public Task IniciarAsync() => Login.PrepararAsync();
+
+    private async void OnLoginConcluido(Usuario usuario)
     {
-        _ = VerificarAtualizacaoAsync(); // em segundo plano, não atrasa a abertura
+        UsuarioNome = usuario.Nome;
+        PerfilTexto = usuario.PerfilTexto;
+        Iniciais = usuario.Iniciais;
+        EhAdmin = usuario.EhAdministrador;
+        Mensagem = null;
+        Autenticado = true;
+
+        if (!_jaVerificouAtualizacao)
+        {
+            _jaVerificouAtualizacao = true;
+            _ = VerificarAtualizacaoAsync(); // em segundo plano, não atrasa a abertura
+        }
         await NavegarAsync("Dashboard");
+    }
+
+    [RelayCommand]
+    private async Task SairAsync()
+    {
+        _sessao.Encerrar();
+        Autenticado = false;
+        PaginaAtual = null;
+        PaginaAtiva = "";
+        UsuarioNome = PerfilTexto = Iniciais = "";
+        EhAdmin = false;
+        Mensagem = null;
+        await Login.PrepararAsync();
     }
 
     [RelayCommand]
     private async Task NavegarAsync(string? destino)
     {
+        if (!_sessao.EstaAutenticado) return;
+
+        // Proteção também no servidor da UI: operador não abre Configurações nem digitando o comando.
+        if (destino == "Configuracoes" && !_sessao.EhAdministrador) destino = "Dashboard";
+
         ViewModelBase pagina = destino switch
         {
             "Clientes" => _sp.GetRequiredService<ClientesViewModel>(),
@@ -89,6 +146,7 @@ public partial class MainWindowViewModel : ViewModelBase
             "Financeiro" => _sp.GetRequiredService<FinanceiroViewModel>(),
             "NotasFiscais" => _sp.GetRequiredService<NotasFiscaisViewModel>(),
             "Configuracoes" => _sp.GetRequiredService<ConfiguracoesViewModel>(),
+            "Conta" => _sp.GetRequiredService<ContaViewModel>(),
             _ => _sp.GetRequiredService<DashboardViewModel>()
         };
 

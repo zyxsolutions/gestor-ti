@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:GestorTI.Views"
         x:Class="GestorTI.Views.MainWindow"
         Title="ZYX Core"
         Icon="/Assets/app.ico"
@@ -7,7 +8,8 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource PageBrush}">
 
-  <Grid ColumnDefinitions="248,*">
+  <Grid>
+  <Grid ColumnDefinitions="248,*" IsVisible="{Binding Autenticado}">
 
     <!-- ===== Menu lateral ===== -->
     <Border Background="{DynamicResource SidebarBrush}" Padding="16">
@@ -22,8 +24,25 @@
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Spacing="4">
-          <Button Classes="nav" Classes.active="{Binding IsConfiguracoes}"
+          <!-- Usuário logado -->
+          <Border Background="#12306E" CornerRadius="10" Padding="10" Margin="0,0,0,8">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Border Width="34" Height="34" CornerRadius="17" Background="#0030B9">
+                <TextBlock Text="{Binding Iniciais}" Foreground="White" FontWeight="SemiBold" FontSize="13"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel VerticalAlignment="Center" Spacing="1">
+                <TextBlock Text="{Binding UsuarioNome}" Foreground="White" FontSize="13" FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis" MaxWidth="150"/>
+                <TextBlock Text="{Binding PerfilTexto}" Foreground="#8FA3D6" FontSize="11"/>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+          <Button Classes="nav" Classes.active="{Binding IsConta}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Conta" Content="Minha conta"/>
+          <Button Classes="nav" Classes.active="{Binding IsConfiguracoes}" IsVisible="{Binding EhAdmin}"
                   Command="{Binding NavegarCommand}" CommandParameter="Configuracoes" Content="Configurações"/>
+          <Button Classes="nav" Command="{Binding SairCommand}" Content="Sair"/>
           <Button Classes="primary" Margin="0,8,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                   Background="#12B76A" Content="{Binding TextoAtualizacao}"
                   IsVisible="{Binding AtualizacaoDisponivel}" IsEnabled="{Binding !Atualizando}"
@@ -57,5 +76,11 @@
         <ContentControl Content="{Binding PaginaAtual}" Margin="32"/>
       </ScrollViewer>
     </DockPanel>
+  </Grid>
+
+  <!-- Tela de login por cima de tudo até alguém entrar -->
+  <Border IsVisible="{Binding NaoAutenticado}" Background="White">
+    <views:LoginView DataContext="{Binding Login}"/>
+  </Border>
   </Grid>
 </Window>

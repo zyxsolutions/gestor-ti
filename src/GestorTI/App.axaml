@@ -14,6 +14,7 @@
     <DataTemplate DataType="vm:FinanceiroViewModel"><views:FinanceiroView/></DataTemplate>
     <DataTemplate DataType="vm:NotasFiscaisViewModel"><views:NotasFiscaisView/></DataTemplate>
     <DataTemplate DataType="vm:ConfiguracoesViewModel"><views:ConfiguracoesView/></DataTemplate>
+    <DataTemplate DataType="vm:ContaViewModel"><views:ContaView/></DataTemplate>
   </Application.DataTemplates>
 
   <Application.Resources>
@@ -78,6 +79,10 @@
     <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
       <Setter Property="Background" Value="#E5ECFF"/><Setter Property="Foreground" Value="#0030B9"/>
     </Style>
+
+    <!-- Tela de login -->
+    <Style Selector="TextBox.login"><Setter Property="MinHeight" Value="44"/><Setter Property="FontSize" Value="14"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="Button.login"><Setter Property="MinHeight" Value="46"/><Setter Property="FontSize" Value="15"/></Style>
 
     <!-- Menu lateral -->
     <Style Selector="Button.nav">

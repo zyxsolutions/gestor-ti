@@ -1,0 +1,113 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.LoginView">
+  <Grid ColumnDefinitions="*,520" Background="White">
+
+    <!-- ===== Painel da marca ===== -->
+    <Border Grid.Column="0" ClipToBounds="True">
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#0B1F4B" Offset="0"/>
+          <GradientStop Color="#0030B9" Offset="1"/>
+        </LinearGradientBrush>
+      </Border.Background>
+      <Grid>
+        <!-- Círculos decorativos -->
+        <Ellipse Width="520" Height="520" Fill="#14FFFFFF" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-180,-160,0"/>
+        <Ellipse Width="360" Height="360" Fill="#0FFFFFFF" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-120,0,0,-140"/>
+
+        <StackPanel VerticalAlignment="Center" Margin="72,0,56,0" Spacing="22" MaxWidth="560">
+          <Image Source="/Assets/logo-mark.png" Width="84" Height="84" HorizontalAlignment="Left"/>
+          <TextBlock Text="ZYX Core" FontSize="44" FontWeight="ExtraBold" Foreground="White"/>
+          <TextBlock Text="Sua operação de TI sob controle: clientes, contratos, cobranças e notas fiscais em um só lugar."
+                     FontSize="18" Foreground="#C7D2F0" TextWrapping="Wrap" LineHeight="28"/>
+          <StackPanel Spacing="10" Margin="0,12,0,0">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Ellipse Width="8" Height="8" Fill="#12B76A" VerticalAlignment="Center"/>
+              <TextBlock Text="Contratos recorrentes e cobranças automáticas" Foreground="#E3E9FB" FontSize="14"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Ellipse Width="8" Height="8" Fill="#12B76A" VerticalAlignment="Center"/>
+              <TextBlock Text="Emissão de NFS-e e pasta organizada por cliente" Foreground="#E3E9FB" FontSize="14"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Ellipse Width="8" Height="8" Fill="#12B76A" VerticalAlignment="Center"/>
+              <TextBlock Text="Backup automático e atualização sem reinstalar" Foreground="#E3E9FB" FontSize="14"/>
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+
+        <TextBlock Text="ZYX Tech" Foreground="#8FA3D6" FontSize="12" HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom" Margin="72,0,0,32"/>
+      </Grid>
+    </Border>
+
+    <!-- ===== Formulário ===== -->
+    <Grid Grid.Column="1" Background="White">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel VerticalAlignment="Center" Margin="64,40" Spacing="16" MinHeight="560">
+
+          <StackPanel Spacing="6" Margin="0,0,0,8">
+            <TextBlock Text="{Binding Titulo}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
+            <TextBlock Text="{Binding Subtitulo}" FontSize="14" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+          </StackPanel>
+
+          <!-- Aviso de modo de recuperação -->
+          <Border IsVisible="{Binding ModoRecuperacao}" Background="#FFF4DB" BorderBrush="#F5D58A"
+                  BorderThickness="1" CornerRadius="8" Padding="12">
+            <TextBlock Foreground="#7A4B00" TextWrapping="Wrap" FontSize="13"
+                       Text="Modo de recuperação: defina um novo administrador. Os usuários existentes continuam no sistema."/>
+          </Border>
+
+          <StackPanel Spacing="5" IsVisible="{Binding ModoCadastro}">
+            <TextBlock Classes="label" Text="Seu nome"/>
+            <TextBox Classes="login" Text="{Binding Nome}" Watermark="Ex.: Lucas Sabar"/>
+          </StackPanel>
+
+          <StackPanel Spacing="5">
+            <TextBlock Classes="label" Text="Usuário"/>
+            <TextBox Classes="login" Text="{Binding Login}" Watermark="seu.usuario"/>
+          </StackPanel>
+
+          <StackPanel Spacing="5">
+            <TextBlock Classes="label" Text="Senha"/>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Classes="login" Grid.ColumnSpan="2" Text="{Binding Senha}" PasswordChar="●"
+                       RevealPassword="{Binding MostrarSenha}" Watermark="••••••••" Padding="12,0,84,0"/>
+              <ToggleButton Grid.Column="1" Margin="0,0,6,0" Padding="8,4" FontSize="12" VerticalAlignment="Center"
+                            IsChecked="{Binding MostrarSenha}" Content="Mostrar" Background="Transparent"/>
+            </Grid>
+          </StackPanel>
+
+          <StackPanel Spacing="5" IsVisible="{Binding ModoCadastro}">
+            <TextBlock Classes="label" Text="Confirmar senha (mínimo 8 caracteres)"/>
+            <TextBox Classes="login" Text="{Binding ConfirmarSenha}" PasswordChar="●"
+                     RevealPassword="{Binding MostrarSenha}"/>
+          </StackPanel>
+
+          <!-- Erro -->
+          <Border IsVisible="{Binding TemErro}" Background="#FDE7E7" BorderBrush="#F4B7B2"
+                  BorderThickness="1" CornerRadius="8" Padding="12">
+            <TextBlock Text="{Binding Erro}" Foreground="#7A1A12" TextWrapping="Wrap" FontSize="13"/>
+          </Border>
+
+          <!-- Info -->
+          <Border IsVisible="{Binding TemInfo}" Background="#E5ECFF" BorderBrush="#B9CBFF"
+                  BorderThickness="1" CornerRadius="8" Padding="12">
+            <TextBlock Text="{Binding Info}" Foreground="#0B1F4B" TextWrapping="Wrap" FontSize="13"/>
+          </Border>
+
+          <Button Classes="primary login" IsDefault="True" HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Center" Content="{Binding TextoBotao}"
+                  IsEnabled="{Binding !Ocupado}" Command="{Binding ConfirmarCommand}"/>
+
+          <Button Classes="ghost" HorizontalAlignment="Center" Content="Esqueci minha senha"
+                  IsVisible="{Binding ModoLogin}" Command="{Binding EsqueciSenhaCommand}"/>
+
+          <TextBlock Text="{Binding VersaoTexto}" FontSize="11" Foreground="{DynamicResource MutedBrush}"
+                     HorizontalAlignment="Center" Margin="0,16,0,0"/>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

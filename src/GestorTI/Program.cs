@@ -32,7 +32,10 @@ public static class Program
         // Evolução futura: trocar por migrations (dotnet ef migrations add ...) e db.Database.Migrate().
         var factory = AppHost.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
         using (var db = factory.CreateDbContext())
+        {
             db.Database.EnsureCreated();
+            SchemaUpdater.Atualizar(db); // bancos criados em versões anteriores ganham as tabelas novas
+        }
 
         AppHost.Start(); // inicia polling de NFS-e, backup e rotinas
         try

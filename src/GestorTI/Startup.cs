@@ -22,6 +22,9 @@ public static class Startup
         s.AddSingleton<BackupService>();
         s.AddSingleton<PastasService>();
         s.AddSingleton<UpdateService>();
+        s.AddSingleton<SessaoService>();
+        s.AddSingleton<AuthService>();
+        s.AddSingleton<UsuariosService>();
         s.AddSingleton<NfseService>();
         s.AddHttpClient<INfseProvider, FocusNfeProvider>(); // HttpClient gerenciado (pool/DNS) pelo IHttpClientFactory
 
@@ -31,6 +34,7 @@ public static class Startup
         s.AddHostedService<RotinasService>();
 
         // ViewModels
+        s.AddSingleton<LoginViewModel>();
         s.AddSingleton<MainWindowViewModel>();
         s.AddTransient<DashboardViewModel>();
         s.AddTransient<ClientesViewModel>();
@@ -38,5 +42,7 @@ public static class Startup
         s.AddTransient<FinanceiroViewModel>();
         s.AddTransient<NotasFiscaisViewModel>();
         s.AddTransient<ConfiguracoesViewModel>();
+        s.AddTransient<UsuariosViewModel>();
+        s.AddTransient<ContaViewModel>();
     }
 }

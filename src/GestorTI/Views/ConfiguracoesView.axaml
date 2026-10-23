@@ -1,11 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:GestorTI.Views"
              x:Class="GestorTI.Views.ConfiguracoesView">
-  <StackPanel Spacing="24" MaxWidth="900" HorizontalAlignment="Left">
+  <StackPanel Spacing="16" MaxWidth="900" HorizontalAlignment="Left">
     <StackPanel Spacing="4">
       <TextBlock Classes="h1" Text="Configurações"/>
-      <TextBlock Classes="muted" Text="Emissor de NFS-e, pastas e backup"/>
+      <TextBlock Classes="muted" Text="Emissor de NFS-e, pastas, backup e usuários"/>
     </StackPanel>
+
+    <TabControl Padding="0">
+      <TabItem Header="Geral">
+  <StackPanel Spacing="24" Margin="0,16,0,0">
 
     <Border Classes="card">
       <StackPanel Spacing="10">
@@ -76,5 +81,12 @@
       <Button Classes="primary" Content="Salvar configurações" Command="{Binding SalvarCommand}"/>
       <Button Classes="ghost" Content="Fazer backup agora" Command="{Binding BackupAgoraCommand}"/>
     </StackPanel>
+  </StackPanel>
+      </TabItem>
+
+      <TabItem Header="Usuários">
+        <views:UsuariosView DataContext="{Binding Usuarios}" Margin="0,16,0,0"/>
+      </TabItem>
+    </TabControl>
   </StackPanel>
 </UserControl>

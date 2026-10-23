@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="using:GestorTI.Converters"
+             x:Class="GestorTI.Views.UsuariosView">
+  <StackPanel Spacing="16">
+
+    <Border IsVisible="{Binding TemMensagem}" Background="#FFF4DB" BorderBrush="#F5D58A"
+            BorderThickness="1" CornerRadius="8" Padding="14,10">
+      <TextBlock Text="{Binding Mensagem}" Foreground="#7A4B00" TextWrapping="Wrap"/>
+    </Border>
+
+    <!-- Confirmação de exclusão -->
+    <Border Classes="card" Background="#FDE7E7" BorderBrush="#F4B7B2" IsVisible="{Binding TemConfirmacao}">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Foreground="#7A1A12" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
+        <Button Grid.Column="1" Classes="primary" Background="#B42318" Margin="12,0,8,0"
+                Content="Sim, excluir" Command="{Binding ConfirmarCommand}"/>
+        <Button Grid.Column="2" Classes="ghost" Content="Cancelar" Command="{Binding CancelarConfirmacaoCommand}"/>
+      </Grid>
+    </Border>
+
+    <!-- Lista -->
+    <Border Classes="card">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="h2" Text="Usuários do sistema" Margin="0,0,0,8"/>
+        <Grid ColumnDefinitions="40,1.4*,1.1*,1*,80,1.2*,Auto">
+          <TextBlock Classes="th" Grid.Column="1" Text="NOME"/>
+          <TextBlock Classes="th" Grid.Column="2" Text="USUÁRIO"/>
+          <TextBlock Classes="th" Grid.Column="3" Text="PERFIL"/>
+          <TextBlock Classes="th" Grid.Column="4" Text="STATUS"/>
+          <TextBlock Classes="th" Grid.Column="5" Text="ÚLTIMO ACESSO"/>
+        </Grid>
+        <ItemsControl ItemsSource="{Binding Usuarios}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="row">
+                <Grid ColumnDefinitions="40,1.4*,1.1*,1*,80,1.2*,Auto">
+                  <Border Width="30" Height="30" CornerRadius="15" Background="#E5ECFF" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Iniciais}" FontSize="12" FontWeight="SemiBold" Foreground="#0030B9"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <TextBlock Classes="cell" Grid.Column="1" FontWeight="SemiBold" Text="{Binding Nome}"/>
+                  <TextBlock Classes="cell" Grid.Column="2" Text="{Binding Login}"/>
+                  <TextBlock Classes="cell" Grid.Column="3" Text="{Binding PerfilTexto}"/>
+                  <Border Classes="badge" Grid.Column="4" Width="72"
+                          Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                    <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                               Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                  </Border>
+                  <TextBlock Classes="cell" Grid.Column="5" Text="{Binding UltimoAcessoTexto}"/>
+                  <StackPanel Grid.Column="6" Orientation="Horizontal" Margin="6,0,0,0">
+                    <Button Classes="ghost" Padding="8,5" Content="Editar"
+                            Command="{Binding $parent[UserControl].DataContext.EditarUsuarioCommand}" CommandParameter="{Binding}"/>
+                    <Button Classes="ghost" Padding="8,5" Foreground="#B42318" Content="Excluir"
+                            Command="{Binding $parent[UserControl].DataContext.ExcluirUsuarioCommand}" CommandParameter="{Binding}"/>
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+
+    <!-- Formulário -->
+    <Border Classes="card">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="{Binding TituloForm}"/>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Nome"/>
+            <TextBox Text="{Binding Nome}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Usuário (login)"/>
+            <TextBox Text="{Binding Login}"/>
+          </StackPanel>
+        </Grid>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="{Binding RotuloSenha}"/>
+            <TextBox Text="{Binding Senha}" PasswordChar="●"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Confirmar senha"/>
+            <TextBox Text="{Binding ConfirmarSenha}" PasswordChar="●"/>
+          </StackPanel>
+        </Grid>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Perfil"/>
+            <ComboBox ItemsSource="{Binding Perfis}" SelectedItem="{Binding PerfilSelecionado}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4" VerticalAlignment="Bottom">
+            <CheckBox IsChecked="{Binding Ativo}" Content="Usuário ativo (pode entrar no sistema)"/>
+          </StackPanel>
+        </Grid>
+        <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                   Text="Administrador gerencia usuários e configurações. Operador usa clientes, contratos, financeiro e notas."/>
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <Button Classes="primary" Content="{Binding TextoBotao}" Command="{Binding SalvarCommand}"/>
+          <Button Classes="ghost" Content="Cancelar edição" IsVisible="{Binding Editando}"
+                  Command="{Binding CancelarEdicaoCommand}"/>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

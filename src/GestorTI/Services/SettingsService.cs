@@ -33,6 +33,9 @@ public sealed class AppSettings
     public int BackupIntervaloHoras { get; set; } = 24;
     public int BackupRetencao { get; set; } = 14;
     public DateTime? UltimoBackupUtc { get; set; }
+
+    /// <summary>Último login usado — só preenche o campo "Usuário" na tela de entrada (nunca a senha).</summary>
+    public string UltimoUsuario { get; set; } = "";
 }
 
 /// <summary>Lê/grava settings.json. O token da API é protegido com DPAPI (usuário atual do Windows).</summary>
