@@ -1,7 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="GestorTI.Views.MainWindow"
-        Title="Gestor TI"
+        Title="ZYX Core"
+        Icon="/Assets/app.ico"
         Width="1280" Height="800" MinWidth="1000" MinHeight="640"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource PageBrush}">
@@ -12,9 +13,12 @@
     <Border Background="{DynamicResource SidebarBrush}" Padding="16">
       <DockPanel LastChildFill="True">
 
-        <StackPanel DockPanel.Dock="Top" Margin="8,8,0,28" Spacing="2">
-          <TextBlock Text="Gestor TI" FontSize="22" FontWeight="Bold" Foreground="White"/>
-          <TextBlock Text="Operação de infraestrutura" FontSize="12" Foreground="#8FA3D6"/>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="6,6,0,28">
+          <Image Source="/Assets/logo-mark.png" Width="44" Height="44" VerticalAlignment="Center"/>
+          <StackPanel VerticalAlignment="Center" Spacing="2">
+            <TextBlock Text="ZYX Core" FontSize="20" FontWeight="ExtraBold" Foreground="White"/>
+            <TextBlock Text="Gestão de operações de TI" FontSize="11" Foreground="#8FA3D6"/>
+          </StackPanel>
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom" Spacing="4">

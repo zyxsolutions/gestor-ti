@@ -61,7 +61,8 @@ jobs:
         run: >
           vpk pack
           --packId GestorTI
-          --packTitle "Gestor TI"
+          --packTitle "ZYX Core"
+          --icon src/GestorTI/Assets/app.ico
           --packVersion ${{ env.APP_VERSION }}
           --packDir publish
           --mainExe GestorTI.exe
@@ -71,6 +72,6 @@ jobs:
           vpk upload github
           --repoUrl https://github.com/${{ github.repository }}
           --publish
-          --releaseName "Gestor TI v${{ env.APP_VERSION }}"
+          --releaseName "ZYX Core v${{ env.APP_VERSION }}"
           --tag v${{ env.APP_VERSION }}
           --token ${{ secrets.GITHUB_TOKEN }}

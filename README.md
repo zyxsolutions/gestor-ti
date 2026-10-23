@@ -1,4 +1,6 @@
-# Gestor TI
+<p align="center"><img src="brand/logo-horizontal-light.png" alt="ZYX Core" width="420"></p>
+
+# ZYX Core — gestão de operações de TI
 
 > ### ⬇️ [Baixar o instalador (Windows)](https://github.com/zyxsolutions/gestor-ti/releases/latest/download/GestorTI-win-Setup.exe)
 > Se o link direto não abrir, use a [página de versões](https://github.com/zyxsolutions/gestor-ti/releases/latest) e baixe o arquivo `GestorTI-win-Setup.exe`. Depois da primeira instalação o app se atualiza sozinho.

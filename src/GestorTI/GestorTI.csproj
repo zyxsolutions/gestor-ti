@@ -9,10 +9,15 @@
     <AssemblyName>GestorTI</AssemblyName>
     <RootNamespace>GestorTI</RootNamespace>
     <Version>1.0.0</Version>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <!-- Bindings por reflexão: mais simples de evoluir. Troque para true se quiser bindings compilados (exige x:DataType). -->
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.3" />
