@@ -30,7 +30,7 @@ src/GestorTI/
 2. **Configurações** → informe CNPJ, município emissor (IBGE), token da Focus NFe (comece em `homologacao`) e a pasta de backup (OneDrive).
 3. **Clientes** → cadastre com endereço completo e código IBGE (exigido pela NFS-e).
 4. **Assinaturas** → crie contratos; as cobranças do mês são geradas sozinhas (e há o botão manual).
-5. **Cobranças e Extrato** → marque "Receber" (gera a entrada no caixa).
+5. **Cobranças e Extrato** → "Receber" (gera a entrada no caixa); "Editar" altera valor, vencimento e descrição; "Excluir" pede confirmação. Cobranças de contrato não são apagadas (viram "Cancelada") para a rotina mensal não recriá-las.
 6. **Notas Fiscais** → "Emitir NFS-e" nas cobranças pagas. Cada cliente tem sua pasta (`<PastaNotas>\Clientes\<Nome> - <CPF/CNPJ>`): use "Criar pasta do cliente" e "Importar NF do computador" para guardar PDFs/XMLs; as notas emitidas pela API caem nela automaticamente.
 
 ## NFS-e sem webhook (como funciona)

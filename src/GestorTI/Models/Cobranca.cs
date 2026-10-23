@@ -43,6 +43,8 @@ public class Cobranca
     public string StatusTexto => EstaVencida ? "Vencida" : Status.ToString();
 
     [NotMapped] public bool PodeReceber => Status == StatusCobranca.Pendente;
+
+    [NotMapped] public bool PodeEditar => Status != StatusCobranca.Cancelada;
 }
 
 /// <summary>Lançamento do fluxo de caixa (entrada ou saída). Equivale ao "Extrato" do Asaas.</summary>
@@ -64,6 +66,9 @@ public class LancamentoCaixa
     public Cobranca? Cobranca { get; set; }
 
     [NotMapped] public string TipoTexto => Tipo == TipoLancamento.Entrada ? "Entrada" : "Saída";
+
+    /// <summary>Lançamentos criados por um recebimento só mudam pela cobrança de origem.</summary>
+    [NotMapped] public bool PodeEditar => CobrancaId is null;
 
     [NotMapped] public decimal ValorComSinal => Tipo == TipoLancamento.Entrada ? Valor : -Valor;
 }

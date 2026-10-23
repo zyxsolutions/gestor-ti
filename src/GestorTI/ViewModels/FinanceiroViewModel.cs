@@ -28,19 +28,72 @@ public partial class FinanceiroViewModel : ViewModelBase
 
     [ObservableProperty] private string _filtroSelecionado = "Todas";
 
-    // Nova cobrança avulsa
+    // ---------------- Formulário de cobrança (nova ou edição) ----------------
     [ObservableProperty] private Cliente? _clienteSelecionado;
     [ObservableProperty] private string _descricaoCobranca = "";
     [ObservableProperty] private decimal? _valorCobranca;
     [ObservableProperty] private DateTime? _vencimentoCobranca = DateTime.Today.AddDays(7);
 
-    // Novo lançamento de caixa
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EditandoCobranca))]
+    [NotifyPropertyChangedFor(nameof(TituloFormCobranca))]
+    [NotifyPropertyChangedFor(nameof(TextoBotaoCobranca))]
+    private Cobranca? _cobrancaEmEdicao;
+
+    public bool EditandoCobranca => CobrancaEmEdicao is not null;
+    public string TituloFormCobranca => EditandoCobranca ? "Editar cobrança" : "Nova cobrança avulsa";
+    public string TextoBotaoCobranca => EditandoCobranca ? "Salvar alterações" : "Criar cobrança";
+
+    // ---------------- Formulário de lançamento (novo ou edição) ----------------
     [ObservableProperty] private TipoLancamento _tipoLancamento = TipoLancamento.Saida;
     [ObservableProperty] private string _descricaoLancamento = "";
     [ObservableProperty] private string _categoriaLancamento = "";
     [ObservableProperty] private decimal? _valorLancamento;
     [ObservableProperty] private DateTime? _dataLancamento = DateTime.Today;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EditandoLancamento))]
+    [NotifyPropertyChangedFor(nameof(TituloFormLancamento))]
+    [NotifyPropertyChangedFor(nameof(TextoBotaoLancamento))]
+    private LancamentoCaixa? _lancamentoEmEdicao;
+
+    public bool EditandoLancamento => LancamentoEmEdicao is not null;
+    public string TituloFormLancamento => EditandoLancamento ? "Editar lançamento" : "Novo lançamento";
+    public string TextoBotaoLancamento => EditandoLancamento ? "Salvar alterações" : "Registrar";
+
+    // ---------------- Confirmação de exclusão ----------------
+    private Func<Task>? _acaoPendente;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TemConfirmacao))]
+    private string _textoConfirmacao = "";
+
+    public bool TemConfirmacao => !string.IsNullOrEmpty(TextoConfirmacao);
+
+    private void PedirConfirmacao(string texto, Func<Task> acao)
+    {
+        _acaoPendente = acao;
+        TextoConfirmacao = texto;
+    }
+
+    private void LimparConfirmacao()
+    {
+        _acaoPendente = null;
+        TextoConfirmacao = "";
+    }
+
+    [RelayCommand]
+    private Task ConfirmarAsync() => SafeAsync(async () =>
+    {
+        var acao = _acaoPendente;
+        LimparConfirmacao();
+        if (acao is not null) await acao();
+    });
+
+    [RelayCommand]
+    private void CancelarConfirmacao() => LimparConfirmacao();
+
+    // ---------------- Carga ----------------
     partial void OnFiltroSelecionadoChanged(string value) => _ = CarregarAsync();
 
     public override Task CarregarAsync() => SafeAsync(RecarregarAsync);
@@ -71,6 +124,7 @@ public partial class FinanceiroViewModel : ViewModelBase
         foreach (var c in clientes) Clientes.Add(c);
     }
 
+    // ---------------- Cobranças ----------------
     [RelayCommand]
     private Task ReceberAsync(Cobranca? cobranca) => SafeAsync(async () =>
     {
@@ -95,8 +149,35 @@ public partial class FinanceiroViewModel : ViewModelBase
         Mensagem = "Cobrança cancelada.";
     });
 
+    /// <summary>Carrega a cobrança no formulário para edição.</summary>
     [RelayCommand]
-    private Task NovaCobrancaAsync() => SafeAsync(async () =>
+    private void EditarCobranca(Cobranca? cobranca)
+    {
+        if (cobranca is null) return;
+        if (!cobranca.PodeEditar) { Mensagem = "Cobranças canceladas não podem ser editadas."; return; }
+
+        ClienteSelecionado = Clientes.FirstOrDefault(c => c.Id == cobranca.ClienteId);
+        DescricaoCobranca = cobranca.Descricao;
+        ValorCobranca = cobranca.Valor;
+        VencimentoCobranca = cobranca.Vencimento;
+        CobrancaEmEdicao = cobranca;
+        Mensagem = null;
+    }
+
+    [RelayCommand]
+    private void CancelarEdicaoCobranca() => LimparFormCobranca();
+
+    private void LimparFormCobranca()
+    {
+        CobrancaEmEdicao = null;
+        DescricaoCobranca = "";
+        ValorCobranca = null;
+        VencimentoCobranca = DateTime.Today.AddDays(7);
+    }
+
+    /// <summary>Cria uma cobrança avulsa ou, se há uma em edição, salva as alterações.</summary>
+    [RelayCommand]
+    private Task SalvarCobrancaAsync() => SafeAsync(async () =>
     {
         if (ClienteSelecionado is null) throw new InvalidOperationException("Selecione o cliente.");
         if (string.IsNullOrWhiteSpace(DescricaoCobranca)) throw new InvalidOperationException("Informe a descrição.");
@@ -104,41 +185,207 @@ public partial class FinanceiroViewModel : ViewModelBase
         if (VencimentoCobranca is null) throw new InvalidOperationException("Informe o vencimento.");
 
         await using var db = await _factory.CreateDbContextAsync();
-        db.Cobrancas.Add(new Cobranca
-        {
-            ClienteId = ClienteSelecionado.Id,
-            Descricao = DescricaoCobranca.Trim(),
-            Valor = ValorCobranca.Value,
-            Vencimento = VencimentoCobranca.Value.Date
-        });
-        await db.SaveChangesAsync();
 
-        DescricaoCobranca = "";
-        ValorCobranca = null;
+        if (CobrancaEmEdicao is null)
+        {
+            db.Cobrancas.Add(new Cobranca
+            {
+                ClienteId = ClienteSelecionado.Id,
+                Descricao = DescricaoCobranca.Trim(),
+                Valor = ValorCobranca.Value,
+                Vencimento = VencimentoCobranca.Value.Date
+            });
+            await db.SaveChangesAsync();
+            LimparFormCobranca();
+            await RecarregarAsync();
+            Mensagem = "Cobrança criada.";
+            return;
+        }
+
+        var c = await db.Cobrancas.Include(x => x.Notas)
+                    .FirstOrDefaultAsync(x => x.Id == CobrancaEmEdicao.Id)
+                ?? throw new InvalidOperationException("Cobrança não encontrada (foi excluída?).");
+        if (c.Status == StatusCobranca.Cancelada)
+            throw new InvalidOperationException("Cobranças canceladas não podem ser editadas.");
+
+        var valorMudou = c.Valor != ValorCobranca.Value;
+        var temNotaAtiva = c.Notas.Any(n => n.Status != StatusNfse.Rejeitada && n.Status != StatusNfse.Cancelada);
+        if (valorMudou && temNotaAtiva)
+            throw new InvalidOperationException(
+                "Esta cobrança já tem NFS-e emitida/em andamento: o valor não pode mudar. Cancele a nota antes.");
+
+        c.ClienteId = ClienteSelecionado.Id;
+        c.Descricao = DescricaoCobranca.Trim();
+        c.Valor = ValorCobranca.Value;
+        c.Vencimento = VencimentoCobranca.Value.Date;
+
+        // Cobrança já paga: mantém o caixa coerente com o novo valor/descrição.
+        if (c.Status == StatusCobranca.Paga)
+        {
+            var lancs = await db.Lancamentos.Where(l => l.CobrancaId == c.Id).ToListAsync();
+            foreach (var l in lancs)
+            {
+                l.Valor = c.Valor;
+                l.Descricao = $"Recebimento: {c.Descricao}";
+            }
+        }
+
+        await db.SaveChangesAsync();
+        LimparFormCobranca();
         await RecarregarAsync();
-        Mensagem = "Cobrança criada.";
+        Mensagem = "Cobrança atualizada.";
     });
 
+    /// <summary>Pede confirmação antes de excluir.</summary>
     [RelayCommand]
-    private Task NovoLancamentoAsync() => SafeAsync(async () =>
+    private void ExcluirCobranca(Cobranca? cobranca)
+    {
+        if (cobranca is null) return;
+        var id = cobranca.Id;
+        PedirConfirmacao(
+            $"Excluir a cobrança \"{cobranca.Descricao}\" ({cobranca.Valor:C})? Esta ação não pode ser desfeita.",
+            () => ExcluirCobrancaConfirmadaAsync(id));
+    }
+
+    private async Task ExcluirCobrancaConfirmadaAsync(int id)
+    {
+        await using var db = await _factory.CreateDbContextAsync();
+        var c = await db.Cobrancas.Include(x => x.Notas).FirstOrDefaultAsync(x => x.Id == id)
+                ?? throw new InvalidOperationException("Cobrança não encontrada.");
+
+        if (c.Notas.Any(n => n.Status != StatusNfse.Rejeitada && n.Status != StatusNfse.Cancelada))
+            throw new InvalidOperationException(
+                "Esta cobrança possui NFS-e emitida/em andamento e não pode ser excluída. Cancele a nota antes.");
+
+        // Estorna o caixa: some a entrada gerada pelo recebimento.
+        var lancs = await db.Lancamentos.Where(l => l.CobrancaId == c.Id).ToListAsync();
+        db.Lancamentos.RemoveRange(lancs);
+
+        string mensagem;
+        if (c.ContratoId is not null)
+        {
+            // Cobrança gerada por contrato: se fosse apagada, a rotina mensal a recriaria.
+            // Fica como "Cancelada" (histórico) — isso impede a recriação.
+            if (c.Status == StatusCobranca.Cancelada && lancs.Count == 0)
+                throw new InvalidOperationException(
+                    "Cobrança de contrato já está cancelada. Para parar de gerar, encerre o contrato em Assinaturas.");
+            c.Status = StatusCobranca.Cancelada;
+            c.DataPagamento = null;
+            mensagem = "Cobrança de contrato cancelada (não é apagada para a rotina mensal não recriá-la). " +
+                       "Para parar de gerar, encerre o contrato em Assinaturas.";
+        }
+        else
+        {
+            db.Notas.RemoveRange(c.Notas); // só restam rejeitadas/canceladas
+            db.Cobrancas.Remove(c);
+            mensagem = "Cobrança excluída.";
+        }
+
+        await db.SaveChangesAsync();
+        if (CobrancaEmEdicao?.Id == id) LimparFormCobranca();
+        await RecarregarAsync();
+        Mensagem = mensagem;
+    }
+
+    // ---------------- Lançamentos de caixa ----------------
+    [RelayCommand]
+    private void EditarLancamento(LancamentoCaixa? l)
+    {
+        if (l is null) return;
+        if (!l.PodeEditar)
+        {
+            Mensagem = "Este lançamento veio do recebimento de uma cobrança. Altere ou exclua a cobrança.";
+            return;
+        }
+
+        TipoLancamento = l.Tipo;
+        DescricaoLancamento = l.Descricao;
+        CategoriaLancamento = l.Categoria ?? "";
+        ValorLancamento = l.Valor;
+        DataLancamento = l.Data;
+        LancamentoEmEdicao = l;
+        Mensagem = null;
+    }
+
+    [RelayCommand]
+    private void CancelarEdicaoLancamento() => LimparFormLancamento();
+
+    private void LimparFormLancamento()
+    {
+        LancamentoEmEdicao = null;
+        DescricaoLancamento = CategoriaLancamento = "";
+        ValorLancamento = null;
+        DataLancamento = DateTime.Today;
+    }
+
+    /// <summary>Registra um lançamento novo ou, se há um em edição, salva as alterações.</summary>
+    [RelayCommand]
+    private Task SalvarLancamentoAsync() => SafeAsync(async () =>
     {
         if (string.IsNullOrWhiteSpace(DescricaoLancamento)) throw new InvalidOperationException("Informe a descrição.");
         if (ValorLancamento is null or <= 0) throw new InvalidOperationException("Informe um valor maior que zero.");
 
         await using var db = await _factory.CreateDbContextAsync();
-        db.Lancamentos.Add(new LancamentoCaixa
+
+        if (LancamentoEmEdicao is null)
         {
-            Tipo = TipoLancamento,
-            Descricao = DescricaoLancamento.Trim(),
-            Categoria = CategoriaLancamento.Trim(),
-            Valor = ValorLancamento.Value,
-            Data = (DataLancamento ?? DateTime.Today).Date
-        });
+            db.Lancamentos.Add(new LancamentoCaixa
+            {
+                Tipo = TipoLancamento,
+                Descricao = DescricaoLancamento.Trim(),
+                Categoria = CategoriaLancamento.Trim(),
+                Valor = ValorLancamento.Value,
+                Data = (DataLancamento ?? DateTime.Today).Date
+            });
+            await db.SaveChangesAsync();
+            LimparFormLancamento();
+            await RecarregarAsync();
+            Mensagem = "Lançamento registrado.";
+            return;
+        }
+
+        var l = await db.Lancamentos.FirstOrDefaultAsync(x => x.Id == LancamentoEmEdicao.Id)
+                ?? throw new InvalidOperationException("Lançamento não encontrado (foi excluído?).");
+        if (l.CobrancaId is not null)
+            throw new InvalidOperationException("Este lançamento veio de uma cobrança: altere a cobrança.");
+
+        l.Tipo = TipoLancamento;
+        l.Descricao = DescricaoLancamento.Trim();
+        l.Categoria = CategoriaLancamento.Trim();
+        l.Valor = ValorLancamento.Value;
+        l.Data = (DataLancamento ?? DateTime.Today).Date;
         await db.SaveChangesAsync();
 
-        DescricaoLancamento = CategoriaLancamento = "";
-        ValorLancamento = null;
+        LimparFormLancamento();
         await RecarregarAsync();
-        Mensagem = "Lançamento registrado.";
+        Mensagem = "Lançamento atualizado.";
     });
+
+    [RelayCommand]
+    private void ExcluirLancamento(LancamentoCaixa? l)
+    {
+        if (l is null) return;
+        if (!l.PodeEditar)
+        {
+            Mensagem = "Este lançamento veio do recebimento de uma cobrança. Exclua a cobrança para estornar.";
+            return;
+        }
+
+        var id = l.Id;
+        PedirConfirmacao(
+            $"Excluir o lançamento \"{l.Descricao}\" ({l.Valor:C})? Esta ação não pode ser desfeita.",
+            async () =>
+            {
+                await using var db = await _factory.CreateDbContextAsync();
+                var alvo = await db.Lancamentos.FirstOrDefaultAsync(x => x.Id == id)
+                           ?? throw new InvalidOperationException("Lançamento não encontrado.");
+                if (alvo.CobrancaId is not null)
+                    throw new InvalidOperationException("Este lançamento veio de uma cobrança.");
+                db.Lancamentos.Remove(alvo);
+                await db.SaveChangesAsync();
+                if (LancamentoEmEdicao?.Id == id) LimparFormLancamento();
+                await RecarregarAsync();
+                Mensagem = "Lançamento excluído.";
+            });
+    }
 }
