@@ -70,6 +70,9 @@ public partial class LoginViewModel : ObservableObject
 
         try
         {
+            var resultado = await _auth.AplicarRedefinicaoExternaAsync();
+            if (resultado is not null) Info = resultado;
+
             ModoCadastro = await _auth.PrecisaConfigurarAdminAsync();
             ModoRecuperacao = _auth.ModoRecuperacao;
         }
@@ -109,6 +112,7 @@ public partial class LoginViewModel : ObservableObject
         Erro = null;
         Info = "Peça a um administrador para redefinir sua senha em Configurações → Usuários. " +
                "Se você é o único administrador, crie um arquivo chamado redefinir-admin.txt na pasta " +
-               "%LOCALAPPDATA%\\GestorTI-Dados e reabra o aplicativo.";
+               "%LOCALAPPDATA%\\GestorTI-Dados e reabra o aplicativo. Outra opção: um arquivo redefinir-senha.txt nessa pasta, " +
+               "com as linhas usuario=SEU_LOGIN e senha=NOVA_SENHA (o arquivo é apagado após o uso).";
     }
 }

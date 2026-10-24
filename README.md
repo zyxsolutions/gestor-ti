@@ -21,6 +21,7 @@ Sistema desktop (Windows) para gestão de uma operação de TI como MEI: cliente
 - **Tema:** botão "Modo claro / escuro" no menu lateral; a escolha fica salva (na primeira vez segue o tema do Windows).
 - **Minha conta:** qualquer usuário troca a própria senha.
 - **Segurança:** senhas guardadas com PBKDF2-SHA256 (600 mil iterações, sal único); nunca em texto puro. Após 5 tentativas erradas há bloqueio de 60 s.
+- **Redefinir senha por fora:** crie `redefinir-senha.txt` em `%LOCALAPPDATA%\\GestorTI-Dados` com duas linhas, `usuario=SEU_LOGIN` e `senha=NOVA_SENHA` (mín. 8 caracteres), e abra o app. A senha é aplicada, o usuário é reativado e o arquivo é apagado automaticamente.
 - **Esqueci a senha do único administrador:** crie um arquivo vazio `redefinir-admin.txt` em `%LOCALAPPDATA%\GestorTI-Dados` e reabra o app: ele pede para cadastrar um novo administrador (o arquivo é apagado em seguida).
 
 ## Estrutura

@@ -36,6 +36,56 @@ public sealed class AuthService
     private static string ArquivoRecuperacao => Path.Combine(AppPaths.Root, "redefinir-admin.txt");
     public bool ModoRecuperacao => File.Exists(ArquivoRecuperacao);
 
+    private static string ArquivoRedefinirSenha => Path.Combine(AppPaths.Root, "redefinir-senha.txt");
+
+    /// <summary>
+    /// Redefinição "por fora": se existir <c>redefinir-senha.txt</c> na pasta de dados, com as linhas
+    /// <c>usuario=...</c> e <c>senha=...</c>, aplica a nova senha (reativa o usuário e zera o bloqueio) e
+    /// APAGA o arquivo — a senha em texto puro não fica no disco. Devolve uma mensagem, ou null se não havia arquivo.
+    /// Exige acesso à pasta de dados do computador, o mesmo nível de acesso necessário ao próprio banco.
+    /// </summary>
+    public async Task<string?> AplicarRedefinicaoExternaAsync()
+    {
+        var arq = ArquivoRedefinirSenha;
+        if (!File.Exists(arq)) return null;
+
+        string[] linhas;
+        try { linhas = await File.ReadAllLinesAsync(arq); }
+        catch (Exception ex) { return "Não foi possível ler redefinir-senha.txt: " + ex.Message; }
+
+        try
+        {
+            string? usuario = null, senha = null;
+            foreach (var l in linhas)
+            {
+                var i = l.IndexOf('=');
+                if (i <= 0) continue;
+                var k = l[..i].Trim().ToLowerInvariant();
+                var v = l[(i + 1)..].Trim();
+                if (k == "usuario") usuario = v;
+                else if (k == "senha") senha = v;
+            }
+
+            var login = ValidarLogin(usuario);
+            ValidarSenha(senha, senha);
+
+            await using var db = await _factory.CreateDbContextAsync();
+            var u = await db.Usuarios.FirstOrDefaultAsync(x => x.Login == login)
+                ?? throw new InvalidOperationException($"Usuário \"{login}\" não encontrado.");
+            u.SenhaHash = SenhaHasher.Gerar(senha!);
+            u.Ativo = true;
+            await db.SaveChangesAsync();
+            lock (_lock) _falhas.Remove(login);
+            return $"Senha do usuário \"{login}\" redefinida. Entre com a nova senha.";
+        }
+        catch (InvalidOperationException ex) { return "Redefinição não aplicada: " + ex.Message; }
+        catch (Exception ex) { return "Redefinição não aplicada: " + ex.Message; }
+        finally
+        {
+            try { File.Delete(arq); } catch { /* sem permissão: o usuário apaga manualmente */ }
+        }
+    }
+
     /// <summary>Primeiro acesso (nenhum usuário) ou modo de recuperação: a tela pede o cadastro do administrador.</summary>
     public async Task<bool> PrecisaConfigurarAdminAsync()
     {
