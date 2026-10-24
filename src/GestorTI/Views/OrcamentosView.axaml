@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.OrcamentosView">
+  <StackPanel Spacing="20">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Orçamentos"/>
+      <TextBlock Classes="muted" Text="Monte o orçamento, gere o PDF e envie pelo WhatsApp do cliente"/>
+    </StackPanel>
+
+    <!-- Confirmação de exclusão -->
+    <Border Classes="card" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}" IsVisible="{Binding TemConfirmacao}">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Foreground="{DynamicResource DangerFgBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
+        <Button Grid.Column="1" Classes="primary" Background="#B42318" Margin="12,0,8,0"
+                Content="Sim, excluir" Command="{Binding ConfirmarCommand}"/>
+        <Button Grid.Column="2" Classes="ghost" Content="Cancelar" Command="{Binding CancelarConfirmacaoCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,420">
+      <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+        <StackPanel>
+          <TextBlock Classes="muted" Text="Nenhum orçamento criado ainda." Margin="0,4"
+                     IsVisible="{Binding !Orcamentos.Count}"/>
+          <ItemsControl ItemsSource="{Binding Orcamentos}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row">
+                  <StackPanel Spacing="6">
+                    <Grid ColumnDefinitions="Auto,*,Auto,100">
+                      <TextBlock Classes="cell" FontWeight="Bold" Foreground="{DynamicResource GhostFgBrush}"
+                                 Text="{Binding NumeroTexto}" Margin="0,0,10,0"/>
+                      <StackPanel Grid.Column="1" Spacing="1">
+                        <TextBlock Classes="cell" FontWeight="SemiBold" FontSize="14" Text="{Binding Titulo}"/>
+                        <TextBlock Classes="label" Text="{Binding Cliente.Nome}"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" Spacing="1" Margin="12,0" HorizontalAlignment="Right">
+                        <TextBlock Classes="cell" FontWeight="SemiBold" HorizontalAlignment="Right" Text="{Binding Total, StringFormat={}{0:C}}"/>
+                        <TextBlock Classes="label" HorizontalAlignment="Right"
+                                   Text="{Binding Validade, StringFormat=válido até {0:dd/MM/yyyy}}"/>
+                      </StackPanel>
+                      <Border Classes="badge" Grid.Column="3" Width="100"
+                              Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                        <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                                   Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                      </Border>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal">
+                      <Button Classes="ghost" Padding="8,5" Content="PDF"
+                              Command="{Binding $parent[UserControl].DataContext.GerarPdfCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Enviar por WhatsApp"
+                              Command="{Binding $parent[UserControl].DataContext.EnviarWhatsAppCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Aprovar" IsEnabled="{Binding PodeAprovar}"
+                              Command="{Binding $parent[UserControl].DataContext.AprovarCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Recusar" IsEnabled="{Binding PodeAprovar}"
+                              Command="{Binding $parent[UserControl].DataContext.RecusarCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Editar" IsEnabled="{Binding PodeEditar}"
+                              Command="{Binding $parent[UserControl].DataContext.EditarOrcamentoCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Foreground="{DynamicResource DangerTextBrush}" Content="Excluir"
+                              Command="{Binding $parent[UserControl].DataContext.ExcluirOrcamentoCommand}" CommandParameter="{Binding}"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="{Binding TituloForm}"/>
+          <ComboBox ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSelecionado}"
+                    DisplayMemberBinding="{Binding Nome}" PlaceholderText="Cliente"/>
+          <TextBox Watermark="Título (ex.: Desenvolvimento de site)" Text="{Binding Titulo}"/>
+
+          <!-- Itens -->
+          <TextBlock Classes="label" Text="Itens do orçamento" Margin="0,6,0,0"/>
+          <ItemsControl ItemsSource="{Binding Itens}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row" Padding="0,6">
+                  <Grid ColumnDefinitions="*,Auto,Auto">
+                    <StackPanel Spacing="1" VerticalAlignment="Center">
+                      <TextBlock Classes="cell" Text="{Binding Descricao}" TextWrapping="Wrap"/>
+                      <TextBlock Classes="label">
+                        <Run Text="{Binding Quantidade, StringFormat={}{0:0.##}}"/><Run Text=" x "/><Run Text="{Binding ValorUnitario, StringFormat={}{0:C}}"/><Run Text="  =  "/><Run Text="{Binding Total, StringFormat={}{0:C}}"/>
+                      </TextBlock>
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="ghost" Padding="6,4" Content="Editar"
+                            Command="{Binding $parent[UserControl].DataContext.EditarItemCommand}" CommandParameter="{Binding}"/>
+                    <Button Grid.Column="2" Classes="ghost" Padding="6,4" Foreground="{DynamicResource DangerTextBrush}" Content="Remover"
+                            Command="{Binding $parent[UserControl].DataContext.RemoverItemCommand}" CommandParameter="{Binding}"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <Border Background="{DynamicResource PageBrush}" CornerRadius="8" Padding="10">
+            <StackPanel Spacing="8">
+              <TextBox Watermark="Descrição do item" Text="{Binding ItemDescricao}"/>
+              <Grid ColumnDefinitions="*,*,Auto">
+                <StackPanel Margin="0,0,5,0" Spacing="4">
+                  <TextBlock Classes="label" Text="Quantidade"/>
+                  <NumericUpDown Value="{Binding ItemQuantidade}" Minimum="0" Increment="1" FormatString="0.##" ShowButtonSpinner="False"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="5,0,5,0" Spacing="4">
+                  <TextBlock Classes="label" Text="Valor unitário (R$)"/>
+                  <NumericUpDown Value="{Binding ItemValor}" Minimum="0" Increment="50" FormatString="N2" ShowButtonSpinner="False"/>
+                </StackPanel>
+                <Button Grid.Column="2" Classes="primary" VerticalAlignment="Bottom" Content="Adicionar"
+                        Command="{Binding AdicionarItemCommand}"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+            <TextBlock Classes="h2" Text="Total"/>
+            <TextBlock Grid.Column="1" Classes="h2" Text="{Binding TotalTexto}"/>
+          </Grid>
+
+          <TextBlock Classes="label" Text="Validade da proposta"/>
+          <CalendarDatePicker SelectedDate="{Binding Validade}" HorizontalAlignment="Stretch"/>
+          <TextBlock Classes="label" Text="Condições e observações (saem no PDF)"/>
+          <TextBox Text="{Binding Observacoes}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"
+                   Watermark="Prazo de entrega, forma de pagamento, garantia…"/>
+          <Button Classes="primary" Content="{Binding TextoBotao}" Command="{Binding SalvarCommand}"
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <Button Classes="ghost" Content="Cancelar edição" IsVisible="{Binding Editando}"
+                  Command="{Binding CancelarEdicaoCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

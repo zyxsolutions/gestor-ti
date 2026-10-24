@@ -25,6 +25,10 @@ public sealed class AppSettings
     /// <summary>1 = não optante, 2 = MEI, 3 = ME/EPP (tabela do padrão nacional).</summary>
     public int CodigoOpcaoSimplesNacional { get; set; } = 2;
 
+    // Dados da empresa (aparecem no PDF do orçamento)
+    public string NomeEmpresa { get; set; } = "ZYX Tech";
+    public string ContatoEmpresa { get; set; } = "";
+
     // Pastas
     public string PastaNotas { get; set; } = AppPaths.NotasPadrao;
     public string PastaBackup { get; set; } = AppPaths.BackupPadrao;

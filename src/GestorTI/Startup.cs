@@ -21,6 +21,7 @@ public static class Startup
         s.AddSingleton<CobrancaService>();
         s.AddSingleton<BackupService>();
         s.AddSingleton<PastasService>();
+        s.AddSingleton<OrcamentoPdfService>();
         s.AddSingleton<UpdateService>();
         s.AddSingleton<SessaoService>();
         s.AddSingleton<TemaService>();
@@ -40,6 +41,8 @@ public static class Startup
         s.AddTransient<DashboardViewModel>();
         s.AddTransient<ClientesViewModel>();
         s.AddTransient<ContratosViewModel>();
+        s.AddTransient<ServicosViewModel>();
+        s.AddTransient<OrcamentosViewModel>();
         s.AddTransient<FinanceiroViewModel>();
         s.AddTransient<NotasFiscaisViewModel>();
         s.AddTransient<ConfiguracoesViewModel>();

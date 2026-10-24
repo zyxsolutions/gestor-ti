@@ -27,17 +27,17 @@ public sealed class StatusBrushConverter : IValueConverter
 
     private static (string Bg, string Fg) PaletaEscura(string? s) => s switch
     {
-        "Paga" or "Autorizada" or "Ativo" or "Entrada" => ("#143D27", "#6EE7A0"),
-        "Pendente" or "Processando" or "Aguardando envio" or "Suspenso" => ("#3A2E0F", "#FFD98A"),
-        "Vencida" or "Rejeitada" or "Saída" => ("#3D1A1A", "#FF9A92"),
+        "Paga" or "Autorizada" or "Ativo" or "Entrada" or "Concluído" or "Aprovado" => ("#143D27", "#6EE7A0"),
+        "Pendente" or "Processando" or "Aguardando envio" or "Suspenso" or "Em andamento" or "Enviado" => ("#3A2E0F", "#FFD98A"),
+        "Vencida" or "Rejeitada" or "Saída" or "Recusado" => ("#3D1A1A", "#FF9A92"),
         _ => ("#2A3552", "#C3CCE0")
     };
 
     private static (string Bg, string Fg) PaletaClara(string? s) => s switch
     {
-        "Paga" or "Autorizada" or "Ativo" or "Entrada" => ("#E3F6EA", "#1B7F43"),
-        "Pendente" or "Processando" or "Aguardando envio" or "Suspenso" => ("#FFF4DB", "#946200"),
-        "Vencida" or "Rejeitada" or "Saída" => ("#FDE7E7", "#B42318"),
+        "Paga" or "Autorizada" or "Ativo" or "Entrada" or "Concluído" or "Aprovado" => ("#E3F6EA", "#1B7F43"),
+        "Pendente" or "Processando" or "Aguardando envio" or "Suspenso" or "Em andamento" or "Enviado" => ("#FFF4DB", "#946200"),
+        "Vencida" or "Rejeitada" or "Saída" or "Recusado" => ("#FDE7E7", "#B42318"),
         _ => ("#EAECF0", "#475467") // Cancelada, Encerrada, etc.
     };
 }

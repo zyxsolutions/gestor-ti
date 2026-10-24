@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GestorTI.Views.ServicosView">
+  <StackPanel Spacing="20">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="h1" Text="Serviços"/>
+      <TextBlock Classes="muted" Text="Trabalhos avulsos (sites, sistemas, instalações…): valor, anotação do que será feito e cobrança"/>
+    </StackPanel>
+
+    <!-- Confirmação de exclusão -->
+    <Border Classes="card" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}" IsVisible="{Binding TemConfirmacao}">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Foreground="{DynamicResource DangerFgBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
+        <Button Grid.Column="1" Classes="primary" Background="#B42318" Margin="12,0,8,0"
+                Content="Sim, excluir" Command="{Binding ConfirmarCommand}"/>
+        <Button Grid.Column="2" Classes="ghost" Content="Cancelar" Command="{Binding CancelarConfirmacaoCommand}"/>
+      </Grid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,380">
+      <Border Classes="card" Margin="0,0,16,0" VerticalAlignment="Top">
+        <StackPanel>
+          <TextBlock Classes="muted" Text="Nenhum serviço cadastrado ainda." Margin="0,4"
+                     IsVisible="{Binding !Servicos.Count}"/>
+          <ItemsControl ItemsSource="{Binding Servicos}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Classes="row">
+                  <StackPanel Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto,100">
+                      <StackPanel Spacing="1">
+                        <TextBlock Classes="cell" FontWeight="SemiBold" FontSize="14" Text="{Binding Titulo}"/>
+                        <TextBlock Classes="label" Text="{Binding Cliente.Nome}"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="1" Margin="12,0" HorizontalAlignment="Right">
+                        <TextBlock Classes="cell" FontWeight="SemiBold" HorizontalAlignment="Right" Text="{Binding Valor, StringFormat={}{0:C}}"/>
+                        <TextBlock Classes="label" HorizontalAlignment="Right" Text="{Binding CobrancaTexto}"/>
+                      </StackPanel>
+                      <Border Classes="badge" Grid.Column="2" Width="100"
+                              Background="{Binding StatusTexto, Converter={StaticResource StatusBrush}}">
+                        <TextBlock Classes="cell" FontSize="12" Text="{Binding StatusTexto}"
+                                   Foreground="{Binding StatusTexto, Converter={StaticResource StatusBrush}, ConverterParameter=fg}"/>
+                      </Border>
+                    </Grid>
+                    <TextBlock Classes="label" Text="{Binding Categoria}"/>
+                    <TextBlock FontSize="13" TextWrapping="Wrap" MaxLines="4" TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource MutedBrush}" IsVisible="{Binding TemDescricao}"
+                               Text="{Binding Descricao}"/>
+                    <StackPanel Orientation="Horizontal">
+                      <Button Classes="ghost" Padding="8,5" Content="Editar"
+                              Command="{Binding $parent[UserControl].DataContext.EditarServicoCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Concluir" IsEnabled="{Binding PodeConcluir}"
+                              Command="{Binding $parent[UserControl].DataContext.ConcluirCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Gerar cobrança" IsEnabled="{Binding PodeGerarCobranca}"
+                              Command="{Binding $parent[UserControl].DataContext.GerarCobrancaCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Content="Cancelar serviço" IsEnabled="{Binding PodeConcluir}"
+                              Command="{Binding $parent[UserControl].DataContext.CancelarServicoCommand}" CommandParameter="{Binding}"/>
+                      <Button Classes="ghost" Padding="8,5" Foreground="{DynamicResource DangerTextBrush}" Content="Excluir"
+                              Command="{Binding $parent[UserControl].DataContext.ExcluirServicoCommand}" CommandParameter="{Binding}"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" Grid.Column="1" VerticalAlignment="Top">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="h2" Text="{Binding TituloForm}"/>
+          <ComboBox ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSelecionado}"
+                    DisplayMemberBinding="{Binding Nome}" PlaceholderText="Cliente"/>
+          <TextBox Watermark="Título (ex.: Site institucional)" Text="{Binding Titulo}"/>
+          <ComboBox ItemsSource="{Binding Categorias}" SelectedItem="{Binding CategoriaSelecionada}"/>
+          <TextBlock Classes="label" Text="O que será feito (anotações)"/>
+          <TextBox Text="{Binding Descricao}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="110"
+                   Watermark="Escopo, prazos, combinados com o cliente…"/>
+          <Grid ColumnDefinitions="*,*">
+            <StackPanel Margin="0,0,5,0" Spacing="4">
+              <TextBlock Classes="label" Text="Valor (R$)"/>
+              <NumericUpDown Value="{Binding Valor}" Minimum="0" Increment="50" FormatString="N2" ShowButtonSpinner="False"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,0,0" Spacing="4">
+              <TextBlock Classes="label" Text="Início"/>
+              <CalendarDatePicker SelectedDate="{Binding DataInicio}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+          </Grid>
+          <TextBlock Classes="label" Text="Vencimento ao gerar a cobrança"/>
+          <CalendarDatePicker SelectedDate="{Binding VencimentoCobranca}" HorizontalAlignment="Stretch"/>
+          <Button Classes="primary" Content="{Binding TextoBotao}" Command="{Binding SalvarCommand}"
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <Button Classes="ghost" Content="Cancelar edição" IsVisible="{Binding Editando}"
+                  Command="{Binding CancelarEdicaoCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

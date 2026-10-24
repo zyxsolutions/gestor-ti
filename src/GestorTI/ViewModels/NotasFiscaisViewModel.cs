@@ -185,14 +185,7 @@ public partial class NotasFiscaisViewModel : ViewModelBase
     private void Abrir(string? caminho)
     {
         if (string.IsNullOrEmpty(caminho)) return;
-        try
-        {
-            if (OperatingSystem.IsWindows())
-                Process.Start(new ProcessStartInfo(caminho) { UseShellExecute = true });
-            else // Linux: abre pasta/arquivo no aplicativo padrão; macOS: "open"
-                Process.Start(new ProcessStartInfo(OperatingSystem.IsMacOS() ? "open" : "xdg-open", $"\"{caminho}\"")
-                { UseShellExecute = false });
-        }
+        try { Sistema.Abrir(caminho); }
         catch (Exception ex) { Mensagem = "Não foi possível abrir: " + ex.Message; }
     }
 }

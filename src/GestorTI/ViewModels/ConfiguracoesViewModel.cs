@@ -28,6 +28,8 @@ public partial class ConfiguracoesViewModel : ViewModelBase
     [ObservableProperty] private string _codigoMunicipioEmissor = "";
     [ObservableProperty] private string _codigoTributacaoNacional = "";
     [ObservableProperty] private string _codigoNbs = "";
+    [ObservableProperty] private string _nomeEmpresa = "";
+    [ObservableProperty] private string _contatoEmpresa = "";
     [ObservableProperty] private string _pastaNotas = "";
     [ObservableProperty] private string _pastaBackup = "";
     [ObservableProperty] private decimal? _backupIntervaloHoras = 24;
@@ -44,6 +46,8 @@ public partial class ConfiguracoesViewModel : ViewModelBase
         CodigoMunicipioEmissor = s.CodigoMunicipioEmissor;
         CodigoTributacaoNacional = s.CodigoTributacaoNacional;
         CodigoNbs = s.CodigoNbs;
+        NomeEmpresa = s.NomeEmpresa;
+        ContatoEmpresa = s.ContatoEmpresa;
         PastaNotas = s.PastaNotas;
         PastaBackup = s.PastaBackup;
         BackupIntervaloHoras = s.BackupIntervaloHoras;
@@ -68,6 +72,8 @@ public partial class ConfiguracoesViewModel : ViewModelBase
             s.CodigoMunicipioEmissor = CodigoMunicipioEmissor.Trim();
             s.CodigoTributacaoNacional = CodigoTributacaoNacional.Trim();
             s.CodigoNbs = CodigoNbs.Trim();
+            s.NomeEmpresa = string.IsNullOrWhiteSpace(NomeEmpresa) ? "ZYX Tech" : NomeEmpresa.Trim();
+            s.ContatoEmpresa = ContatoEmpresa.Trim();
             s.PastaNotas = PastaNotas.Trim();
             s.PastaBackup = PastaBackup.Trim();
             s.BackupIntervaloHoras = (int)(BackupIntervaloHoras ?? 24);

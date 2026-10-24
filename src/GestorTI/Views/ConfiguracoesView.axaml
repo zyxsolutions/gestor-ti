@@ -54,6 +54,22 @@
 
     <Border Classes="card">
       <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="Dados da empresa (aparecem no PDF do orçamento)"/>
+        <Grid ColumnDefinitions="*,*">
+          <StackPanel Margin="0,0,8,0" Spacing="4">
+            <TextBlock Classes="label" Text="Nome da empresa"/>
+            <TextBox Text="{Binding NomeEmpresa}"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="4">
+            <TextBlock Classes="label" Text="Contato (telefone / e-mail)"/>
+            <TextBox Text="{Binding ContatoEmpresa}"/>
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card">
+      <StackPanel Spacing="10">
         <TextBlock Classes="h2" Text="Pastas e backup"/>
         <StackPanel Spacing="4">
           <TextBlock Classes="label" Text="Pasta das notas fiscais (PDF/XML)"/>

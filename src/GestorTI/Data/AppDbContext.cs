@@ -18,6 +18,9 @@ public class AppDbContext : DbContext
     public DbSet<LancamentoCaixa> Lancamentos => Set<LancamentoCaixa>();
     public DbSet<NotaFiscal> Notas => Set<NotaFiscal>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<Servico> Servicos => Set<Servico>();
+    public DbSet<Orcamento> Orcamentos => Set<Orcamento>();
+    public DbSet<OrcamentoItem> OrcamentoItens => Set<OrcamentoItem>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -25,6 +28,21 @@ public class AppDbContext : DbContext
         {
             e.Property(x => x.Perfil).HasConversion<string>().HasMaxLength(30);
             e.HasIndex(x => x.Login).IsUnique();
+        });
+
+        b.Entity<Servico>(e =>
+        {
+            e.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+            e.HasOne(x => x.Cliente).WithMany().HasForeignKey(x => x.ClienteId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.Cobranca).WithMany().HasForeignKey(x => x.CobrancaId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        b.Entity<Orcamento>(e =>
+        {
+            e.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+            e.HasIndex(x => x.Numero).IsUnique();
+            e.HasOne(x => x.Cliente).WithMany().HasForeignKey(x => x.ClienteId).OnDelete(DeleteBehavior.Restrict);
+            e.HasMany(x => x.Itens).WithOne().HasForeignKey(i => i.OrcamentoId).OnDelete(DeleteBehavior.Cascade);
         });
 
         b.Entity<Cliente>(e =>

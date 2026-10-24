@@ -11,6 +11,8 @@
     <DataTemplate DataType="vm:DashboardViewModel"><views:DashboardView/></DataTemplate>
     <DataTemplate DataType="vm:ClientesViewModel"><views:ClientesView/></DataTemplate>
     <DataTemplate DataType="vm:ContratosViewModel"><views:ContratosView/></DataTemplate>
+    <DataTemplate DataType="vm:ServicosViewModel"><views:ServicosView/></DataTemplate>
+    <DataTemplate DataType="vm:OrcamentosViewModel"><views:OrcamentosView/></DataTemplate>
     <DataTemplate DataType="vm:FinanceiroViewModel"><views:FinanceiroView/></DataTemplate>
     <DataTemplate DataType="vm:NotasFiscaisViewModel"><views:NotasFiscaisView/></DataTemplate>
     <DataTemplate DataType="vm:ConfiguracoesViewModel"><views:ConfiguracoesView/></DataTemplate>

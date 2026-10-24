@@ -95,6 +95,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(IsDashboard))]
     [NotifyPropertyChangedFor(nameof(IsClientes))]
     [NotifyPropertyChangedFor(nameof(IsContratos))]
+    [NotifyPropertyChangedFor(nameof(IsServicos))]
+    [NotifyPropertyChangedFor(nameof(IsOrcamentos))]
     [NotifyPropertyChangedFor(nameof(IsFinanceiro))]
     [NotifyPropertyChangedFor(nameof(IsNotasFiscais))]
     [NotifyPropertyChangedFor(nameof(IsConfiguracoes))]
@@ -104,6 +106,8 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsDashboard => PaginaAtiva == "Dashboard";
     public bool IsClientes => PaginaAtiva == "Clientes";
     public bool IsContratos => PaginaAtiva == "Contratos";
+    public bool IsServicos => PaginaAtiva == "Servicos";
+    public bool IsOrcamentos => PaginaAtiva == "Orcamentos";
     public bool IsFinanceiro => PaginaAtiva == "Financeiro";
     public bool IsNotasFiscais => PaginaAtiva == "NotasFiscais";
     public bool IsConfiguracoes => PaginaAtiva == "Configuracoes";
@@ -159,6 +163,8 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             "Clientes" => _sp.GetRequiredService<ClientesViewModel>(),
             "Contratos" => _sp.GetRequiredService<ContratosViewModel>(),
+            "Servicos" => _sp.GetRequiredService<ServicosViewModel>(),
+            "Orcamentos" => _sp.GetRequiredService<OrcamentosViewModel>(),
             "Financeiro" => _sp.GetRequiredService<FinanceiroViewModel>(),
             "NotasFiscais" => _sp.GetRequiredService<NotasFiscaisViewModel>(),
             "Configuracoes" => _sp.GetRequiredService<ConfiguracoesViewModel>(),

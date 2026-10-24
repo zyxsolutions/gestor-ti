@@ -51,18 +51,22 @@
           <TextBlock Text="{Binding VersaoTexto}" FontSize="11" Foreground="#8FA3D6" Margin="14,10,0,0"/>
         </StackPanel>
 
-        <StackPanel Spacing="4">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Spacing="4">
           <Button Classes="nav" Classes.active="{Binding IsDashboard}"
                   Command="{Binding NavegarCommand}" CommandParameter="Dashboard" Content="Início"/>
           <Button Classes="nav" Classes.active="{Binding IsClientes}"
                   Command="{Binding NavegarCommand}" CommandParameter="Clientes" Content="Clientes"/>
           <Button Classes="nav" Classes.active="{Binding IsContratos}"
                   Command="{Binding NavegarCommand}" CommandParameter="Contratos" Content="Assinaturas (Contratos)"/>
+          <Button Classes="nav" Classes.active="{Binding IsServicos}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Servicos" Content="Serviços"/>
+          <Button Classes="nav" Classes.active="{Binding IsOrcamentos}"
+                  Command="{Binding NavegarCommand}" CommandParameter="Orcamentos" Content="Orçamentos"/>
           <Button Classes="nav" Classes.active="{Binding IsFinanceiro}"
                   Command="{Binding NavegarCommand}" CommandParameter="Financeiro" Content="Cobranças e Extrato"/>
           <Button Classes="nav" Classes.active="{Binding IsNotasFiscais}"
                   Command="{Binding NavegarCommand}" CommandParameter="NotasFiscais" Content="Notas Fiscais"/>
-        </StackPanel>
+        </StackPanel></ScrollViewer>
       </DockPanel>
     </Border>
 
