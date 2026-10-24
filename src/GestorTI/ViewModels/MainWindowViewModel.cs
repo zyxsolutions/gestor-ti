@@ -15,13 +15,15 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IServiceProvider _sp;
     private readonly UpdateService _updates;
     private readonly SessaoService _sessao;
+    private readonly TemaService _tema;
     private bool _jaVerificouAtualizacao;
 
-    public MainWindowViewModel(IServiceProvider sp, UpdateService updates, LoginViewModel login, SessaoService sessao)
+    public MainWindowViewModel(IServiceProvider sp, UpdateService updates, LoginViewModel login, SessaoService sessao, TemaService tema)
     {
         _sp = sp;
         _updates = updates;
         _sessao = sessao;
+        _tema = tema;
         Login = login;
         VersaoTexto = "v" + updates.Versao;
         login.LoginConcluido += OnLoginConcluido;
@@ -75,6 +77,15 @@ public partial class MainWindowViewModel : ViewModelBase
             TextoAtualizacao = "Falha ao atualizar";
             Mensagem = "Não foi possível atualizar: " + ex.Message;
         }
+    }
+
+    // ---- Tema ----
+    [RelayCommand]
+    private async Task AlternarTemaAsync()
+    {
+        _tema.Alternar();
+        // Os "badges" de status são recalculados ao recarregar a página atual.
+        if (Autenticado && !string.IsNullOrEmpty(PaginaAtiva)) await NavegarAsync(PaginaAtiva);
     }
 
     // ---- Navegação ----

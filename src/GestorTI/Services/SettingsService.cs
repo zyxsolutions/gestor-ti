@@ -34,6 +34,9 @@ public sealed class AppSettings
     public int BackupRetencao { get; set; } = 14;
     public DateTime? UltimoBackupUtc { get; set; }
 
+    /// <summary>"Sistema" (segue o Windows), "Claro" ou "Escuro".</summary>
+    public string Tema { get; set; } = "Sistema";
+
     /// <summary>Último login usado — só preenche o campo "Usuário" na tela de entrada (nunca a senha).</summary>
     public string UltimoUsuario { get; set; } = "";
 }

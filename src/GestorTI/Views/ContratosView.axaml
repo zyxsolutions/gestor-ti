@@ -11,8 +11,8 @@
               Content="Gerar cobranças do mês" Command="{Binding GerarCobrancasCommand}"/>
     </Grid>
 
-    <Border Classes="card" Background="#FFF4DB" BorderBrush="#F5D58A" IsVisible="{Binding TemVencendo}">
-      <TextBlock Foreground="#7A4B00" Text="{Binding Vencendo, StringFormat=Atenção: {0} contrato(s) vencendo em até 60 dias.}"/>
+    <Border Classes="card" Background="{DynamicResource WarnBgBrush}" BorderBrush="{DynamicResource WarnBorderBrush}" IsVisible="{Binding TemVencendo}">
+      <TextBlock Foreground="{DynamicResource WarnFgBrush}" Text="{Binding Vencendo, StringFormat=Atenção: {0} contrato(s) vencendo em até 60 dias.}"/>
     </Border>
 
     <Grid ColumnDefinitions="*,360">

@@ -27,7 +27,7 @@
       <Border Classes="card" Grid.Column="2" Margin="0,0,16,0">
         <StackPanel Spacing="6">
           <TextBlock Classes="label" Text="Inadimplência"/>
-          <TextBlock Classes="kpi" Foreground="#B42318" Text="{Binding InadimplenciaValor, StringFormat={}{0:C}}"/>
+          <TextBlock Classes="kpi" Foreground="{DynamicResource DangerTextBrush}" Text="{Binding InadimplenciaValor, StringFormat={}{0:C}}"/>
           <TextBlock Classes="label" Text="{Binding InadimplenciaPercentual, StringFormat={}{0:N1}% do cobrado}"/>
         </StackPanel>
       </Border>

@@ -4,7 +4,7 @@
              xmlns:vm="using:GestorTI.ViewModels"
              xmlns:views="using:GestorTI.Views"
              x:Class="GestorTI.App"
-             RequestedThemeVariant="Light">
+             RequestedThemeVariant="Default">
 
   <!-- ViewModel -> View: a área principal do MainWindow só precisa de um ContentControl. -->
   <Application.DataTemplates>
@@ -18,13 +18,53 @@
   </Application.DataTemplates>
 
   <Application.Resources>
-    <SolidColorBrush x:Key="SidebarBrush" Color="#0B1F4B"/>
-    <SolidColorBrush x:Key="PrimaryBrush" Color="#0030B9"/>
-    <SolidColorBrush x:Key="PageBrush" Color="#F5F6FA"/>
-    <SolidColorBrush x:Key="TextBrush" Color="#101828"/>
-    <SolidColorBrush x:Key="MutedBrush" Color="#667085"/>
-    <SolidColorBrush x:Key="BorderBrushSoft" Color="#E4E7EC"/>
-    <conv:StatusBrushConverter x:Key="StatusBrush"/>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="SidebarBrush" Color="#0B1F4B"/>
+          <SolidColorBrush x:Key="PrimaryBrush" Color="#0030B9"/>
+          <SolidColorBrush x:Key="PageBrush" Color="#F5F6FA"/>
+          <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="TextBrush" Color="#101828"/>
+          <SolidColorBrush x:Key="MutedBrush" Color="#667085"/>
+          <SolidColorBrush x:Key="BorderBrushSoft" Color="#E4E7EC"/>
+          <SolidColorBrush x:Key="GhostFgBrush" Color="#0030B9"/>
+          <SolidColorBrush x:Key="GhostHoverBrush" Color="#E5ECFF"/>
+          <SolidColorBrush x:Key="WarnBgBrush" Color="#FFF4DB"/>
+          <SolidColorBrush x:Key="WarnBorderBrush" Color="#F5D58A"/>
+          <SolidColorBrush x:Key="WarnFgBrush" Color="#7A4B00"/>
+          <SolidColorBrush x:Key="DangerBgBrush" Color="#FDE7E7"/>
+          <SolidColorBrush x:Key="DangerBorderBrush" Color="#F4B7B2"/>
+          <SolidColorBrush x:Key="DangerFgBrush" Color="#7A1A12"/>
+          <SolidColorBrush x:Key="DangerTextBrush" Color="#B42318"/>
+          <SolidColorBrush x:Key="InfoBgBrush" Color="#E5ECFF"/>
+          <SolidColorBrush x:Key="InfoBorderBrush" Color="#B9CBFF"/>
+          <SolidColorBrush x:Key="InfoFgBrush" Color="#0B1F4B"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="SidebarBrush" Color="#070F26"/>
+          <SolidColorBrush x:Key="PrimaryBrush" Color="#2F5BFF"/>
+          <SolidColorBrush x:Key="PageBrush" Color="#0E1424"/>
+          <SolidColorBrush x:Key="CardBrush" Color="#171F33"/>
+          <SolidColorBrush x:Key="TextBrush" Color="#EEF1F8"/>
+          <SolidColorBrush x:Key="MutedBrush" Color="#9AA6C0"/>
+          <SolidColorBrush x:Key="BorderBrushSoft" Color="#2A3552"/>
+          <SolidColorBrush x:Key="GhostFgBrush" Color="#8FB0FF"/>
+          <SolidColorBrush x:Key="GhostHoverBrush" Color="#22305A"/>
+          <SolidColorBrush x:Key="WarnBgBrush" Color="#3A2E0F"/>
+          <SolidColorBrush x:Key="WarnBorderBrush" Color="#6B5417"/>
+          <SolidColorBrush x:Key="WarnFgBrush" Color="#FFD98A"/>
+          <SolidColorBrush x:Key="DangerBgBrush" Color="#3D1A1A"/>
+          <SolidColorBrush x:Key="DangerBorderBrush" Color="#7A2E2E"/>
+          <SolidColorBrush x:Key="DangerFgBrush" Color="#FFB4AD"/>
+          <SolidColorBrush x:Key="DangerTextBrush" Color="#FF8A80"/>
+          <SolidColorBrush x:Key="InfoBgBrush" Color="#1B2A55"/>
+          <SolidColorBrush x:Key="InfoBorderBrush" Color="#2F4590"/>
+          <SolidColorBrush x:Key="InfoFgBrush" Color="#C9D8FF"/>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <conv:StatusBrushConverter x:Key="StatusBrush"/>
+    </ResourceDictionary>
   </Application.Resources>
 
   <Application.Styles>
@@ -41,7 +81,7 @@
 
     <!-- Cartão -->
     <Style Selector="Border.card">
-      <Setter Property="Background" Value="White"/>
+      <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
       <Setter Property="CornerRadius" Value="12"/>
       <Setter Property="Padding" Value="20"/>
       <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushSoft}"/>
@@ -71,13 +111,13 @@
     </Style>
     <Style Selector="Button.ghost">
       <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource GhostFgBrush}"/>
       <Setter Property="Padding" Value="10,6"/>
       <Setter Property="CornerRadius" Value="8"/>
       <Setter Property="FontSize" Value="13"/>
     </Style>
     <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
-      <Setter Property="Background" Value="#E5ECFF"/><Setter Property="Foreground" Value="#0030B9"/>
+      <Setter Property="Background" Value="{DynamicResource GhostHoverBrush}"/><Setter Property="Foreground" Value="{DynamicResource GhostFgBrush}"/>
     </Style>
 
     <!-- Tela de login -->

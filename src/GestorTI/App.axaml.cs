@@ -15,6 +15,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            Program.AppHost.Services.GetRequiredService<GestorTI.Services.TemaService>().AplicarSalvo();
             desktop.MainWindow = new MainWindow
             {
                 DataContext = Program.AppHost.Services.GetRequiredService<MainWindowViewModel>()

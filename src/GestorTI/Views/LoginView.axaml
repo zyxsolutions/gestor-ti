@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="GestorTI.Views.LoginView">
-  <Grid ColumnDefinitions="*,520" Background="White">
+  <Grid ColumnDefinitions="*,520" Background="{DynamicResource CardBrush}">
 
     <!-- ===== Painel da marca ===== -->
     <Border Grid.Column="0" ClipToBounds="True">
@@ -43,7 +43,7 @@
     </Border>
 
     <!-- ===== Formulário ===== -->
-    <Grid Grid.Column="1" Background="White">
+    <Grid Grid.Column="1" Background="{DynamicResource CardBrush}">
       <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel VerticalAlignment="Center" Margin="64,40" Spacing="16" MinHeight="560">
 
@@ -53,9 +53,9 @@
           </StackPanel>
 
           <!-- Aviso de modo de recuperação -->
-          <Border IsVisible="{Binding ModoRecuperacao}" Background="#FFF4DB" BorderBrush="#F5D58A"
+          <Border IsVisible="{Binding ModoRecuperacao}" Background="{DynamicResource WarnBgBrush}" BorderBrush="{DynamicResource WarnBorderBrush}"
                   BorderThickness="1" CornerRadius="8" Padding="12">
-            <TextBlock Foreground="#7A4B00" TextWrapping="Wrap" FontSize="13"
+            <TextBlock Foreground="{DynamicResource WarnFgBrush}" TextWrapping="Wrap" FontSize="13"
                        Text="Modo de recuperação: defina um novo administrador. Os usuários existentes continuam no sistema."/>
           </Border>
 
@@ -86,15 +86,15 @@
           </StackPanel>
 
           <!-- Erro -->
-          <Border IsVisible="{Binding TemErro}" Background="#FDE7E7" BorderBrush="#F4B7B2"
+          <Border IsVisible="{Binding TemErro}" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}"
                   BorderThickness="1" CornerRadius="8" Padding="12">
-            <TextBlock Text="{Binding Erro}" Foreground="#7A1A12" TextWrapping="Wrap" FontSize="13"/>
+            <TextBlock Text="{Binding Erro}" Foreground="{DynamicResource DangerFgBrush}" TextWrapping="Wrap" FontSize="13"/>
           </Border>
 
           <!-- Info -->
-          <Border IsVisible="{Binding TemInfo}" Background="#E5ECFF" BorderBrush="#B9CBFF"
+          <Border IsVisible="{Binding TemInfo}" Background="{DynamicResource InfoBgBrush}" BorderBrush="{DynamicResource InfoBorderBrush}"
                   BorderThickness="1" CornerRadius="8" Padding="12">
-            <TextBlock Text="{Binding Info}" Foreground="#0B1F4B" TextWrapping="Wrap" FontSize="13"/>
+            <TextBlock Text="{Binding Info}" Foreground="{DynamicResource InfoFgBrush}" TextWrapping="Wrap" FontSize="13"/>
           </Border>
 
           <Button Classes="primary login" IsDefault="True" HorizontalAlignment="Stretch"

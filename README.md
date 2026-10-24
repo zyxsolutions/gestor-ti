@@ -18,6 +18,7 @@ Sistema desktop (Windows) para gestão de uma operação de TI como MEI: cliente
 - **Primeiro acesso:** o app pede para criar o administrador (nome, usuário e senha de no mínimo 8 caracteres). Não existe senha padrão.
 - **Perfis:** *Administrador* (tudo, incluindo Configurações e usuários) e *Operador* (clientes, contratos, financeiro e notas).
 - **Configurações → Usuários:** criar, editar (nome, login, perfil, ativo, redefinir senha) e excluir. Não é possível excluir/desativar/rebaixar a si mesmo nem remover o último administrador ativo.
+- **Tema:** botão "Modo claro / escuro" no menu lateral; a escolha fica salva (na primeira vez segue o tema do Windows).
 - **Minha conta:** qualquer usuário troca a própria senha.
 - **Segurança:** senhas guardadas com PBKDF2-SHA256 (600 mil iterações, sal único); nunca em texto puro. Após 5 tentativas erradas há bloqueio de 60 s.
 - **Esqueci a senha do único administrador:** crie um arquivo vazio `redefinir-admin.txt` em `%LOCALAPPDATA%\GestorTI-Dados` e reabra o app: ele pede para cadastrar um novo administrador (o arquivo é apagado em seguida).

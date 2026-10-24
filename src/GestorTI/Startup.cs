@@ -23,6 +23,7 @@ public static class Startup
         s.AddSingleton<PastasService>();
         s.AddSingleton<UpdateService>();
         s.AddSingleton<SessaoService>();
+        s.AddSingleton<TemaService>();
         s.AddSingleton<AuthService>();
         s.AddSingleton<UsuariosService>();
         s.AddSingleton<NfseService>();

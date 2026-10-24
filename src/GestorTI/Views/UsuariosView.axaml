@@ -4,15 +4,15 @@
              x:Class="GestorTI.Views.UsuariosView">
   <StackPanel Spacing="16">
 
-    <Border IsVisible="{Binding TemMensagem}" Background="#FFF4DB" BorderBrush="#F5D58A"
+    <Border IsVisible="{Binding TemMensagem}" Background="{DynamicResource WarnBgBrush}" BorderBrush="{DynamicResource WarnBorderBrush}"
             BorderThickness="1" CornerRadius="8" Padding="14,10">
-      <TextBlock Text="{Binding Mensagem}" Foreground="#7A4B00" TextWrapping="Wrap"/>
+      <TextBlock Text="{Binding Mensagem}" Foreground="{DynamicResource WarnFgBrush}" TextWrapping="Wrap"/>
     </Border>
 
     <!-- Confirmação de exclusão -->
-    <Border Classes="card" Background="#FDE7E7" BorderBrush="#F4B7B2" IsVisible="{Binding TemConfirmacao}">
+    <Border Classes="card" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}" IsVisible="{Binding TemConfirmacao}">
       <Grid ColumnDefinitions="*,Auto,Auto">
-        <TextBlock Foreground="#7A1A12" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
+        <TextBlock Foreground="{DynamicResource DangerFgBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
         <Button Grid.Column="1" Classes="primary" Background="#B42318" Margin="12,0,8,0"
                 Content="Sim, excluir" Command="{Binding ConfirmarCommand}"/>
         <Button Grid.Column="2" Classes="ghost" Content="Cancelar" Command="{Binding CancelarConfirmacaoCommand}"/>
@@ -35,8 +35,8 @@
             <DataTemplate>
               <Border Classes="row">
                 <Grid ColumnDefinitions="40,1.4*,1.1*,1*,80,1.2*,Auto">
-                  <Border Width="30" Height="30" CornerRadius="15" Background="#E5ECFF" HorizontalAlignment="Left">
-                    <TextBlock Text="{Binding Iniciais}" FontSize="12" FontWeight="SemiBold" Foreground="#0030B9"
+                  <Border Width="30" Height="30" CornerRadius="15" Background="{DynamicResource InfoBgBrush}" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Iniciais}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource GhostFgBrush}"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
                   <TextBlock Classes="cell" Grid.Column="1" FontWeight="SemiBold" Text="{Binding Nome}"/>
@@ -51,7 +51,7 @@
                   <StackPanel Grid.Column="6" Orientation="Horizontal" Margin="6,0,0,0">
                     <Button Classes="ghost" Padding="8,5" Content="Editar"
                             Command="{Binding $parent[UserControl].DataContext.EditarUsuarioCommand}" CommandParameter="{Binding}"/>
-                    <Button Classes="ghost" Padding="8,5" Foreground="#B42318" Content="Excluir"
+                    <Button Classes="ghost" Padding="8,5" Foreground="{DynamicResource DangerTextBrush}" Content="Excluir"
                             Command="{Binding $parent[UserControl].DataContext.ExcluirUsuarioCommand}" CommandParameter="{Binding}"/>
                   </StackPanel>
                 </Grid>

@@ -8,9 +8,9 @@
     </StackPanel>
 
     <!-- Confirmação de exclusão -->
-    <Border Classes="card" Background="#FDE7E7" BorderBrush="#F4B7B2" IsVisible="{Binding TemConfirmacao}">
+    <Border Classes="card" Background="{DynamicResource DangerBgBrush}" BorderBrush="{DynamicResource DangerBorderBrush}" IsVisible="{Binding TemConfirmacao}">
       <Grid ColumnDefinitions="*,Auto,Auto">
-        <TextBlock Foreground="#7A1A12" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
+        <TextBlock Foreground="{DynamicResource DangerFgBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding TextoConfirmacao}"/>
         <Button Grid.Column="1" Classes="primary" Background="#B42318" Margin="12,0,8,0"
                 Content="Sim, excluir" Command="{Binding ConfirmarCommand}"/>
         <Button Grid.Column="2" Classes="ghost" Content="Cancelar" Command="{Binding CancelarConfirmacaoCommand}"/>
@@ -89,7 +89,7 @@
                                   Command="{Binding $parent[UserControl].DataContext.EditarCobrancaCommand}" CommandParameter="{Binding}"/>
                           <Button Classes="ghost" Padding="8,5" Content="Cancelar" IsEnabled="{Binding PodeReceber}"
                                   Command="{Binding $parent[UserControl].DataContext.CancelarCommand}" CommandParameter="{Binding}"/>
-                          <Button Classes="ghost" Padding="8,5" Foreground="#B42318" Content="Excluir"
+                          <Button Classes="ghost" Padding="8,5" Foreground="{DynamicResource DangerTextBrush}" Content="Excluir"
                                   Command="{Binding $parent[UserControl].DataContext.ExcluirCobrancaCommand}" CommandParameter="{Binding}"/>
                         </StackPanel>
                       </Grid>
@@ -167,7 +167,7 @@
                         <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="0" Margin="6,0,0,0">
                           <Button Classes="ghost" Padding="8,5" Content="Editar" IsEnabled="{Binding PodeEditar}"
                                   Command="{Binding $parent[UserControl].DataContext.EditarLancamentoCommand}" CommandParameter="{Binding}"/>
-                          <Button Classes="ghost" Padding="8,5" Foreground="#B42318" Content="Excluir" IsEnabled="{Binding PodeEditar}"
+                          <Button Classes="ghost" Padding="8,5" Foreground="{DynamicResource DangerTextBrush}" Content="Excluir" IsEnabled="{Binding PodeEditar}"
                                   Command="{Binding $parent[UserControl].DataContext.ExcluirLancamentoCommand}" CommandParameter="{Binding}"/>
                         </StackPanel>
                       </Grid>

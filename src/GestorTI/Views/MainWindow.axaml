@@ -42,6 +42,7 @@
                   Command="{Binding NavegarCommand}" CommandParameter="Conta" Content="Minha conta"/>
           <Button Classes="nav" Classes.active="{Binding IsConfiguracoes}" IsVisible="{Binding EhAdmin}"
                   Command="{Binding NavegarCommand}" CommandParameter="Configuracoes" Content="Configurações"/>
+          <Button Classes="nav" Command="{Binding AlternarTemaCommand}" Content="Modo claro / escuro"/>
           <Button Classes="nav" Command="{Binding SairCommand}" Content="Sair"/>
           <Button Classes="primary" Margin="0,8,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                   Background="#12B76A" Content="{Binding TextoAtualizacao}"
@@ -69,8 +70,8 @@
     <DockPanel Grid.Column="1">
       <Border DockPanel.Dock="Top"
               IsVisible="{Binding PaginaAtual.TemMensagem, FallbackValue=False}"
-              Background="#FFF4DB" BorderBrush="#F5D58A" BorderThickness="0,0,0,1" Padding="32,12">
-        <TextBlock Text="{Binding PaginaAtual.Mensagem}" Foreground="#7A4B00" TextWrapping="Wrap"/>
+              Background="{DynamicResource WarnBgBrush}" BorderBrush="{DynamicResource WarnBorderBrush}" BorderThickness="0,0,0,1" Padding="32,12">
+        <TextBlock Text="{Binding PaginaAtual.Mensagem}" Foreground="{DynamicResource WarnFgBrush}" TextWrapping="Wrap"/>
       </Border>
       <ScrollViewer>
         <ContentControl Content="{Binding PaginaAtual}" Margin="32"/>
@@ -79,7 +80,7 @@
   </Grid>
 
   <!-- Tela de login por cima de tudo até alguém entrar -->
-  <Border IsVisible="{Binding NaoAutenticado}" Background="White">
+  <Border IsVisible="{Binding NaoAutenticado}" Background="{DynamicResource CardBrush}">
     <views:LoginView DataContext="{Binding Login}"/>
   </Border>
   </Grid>
