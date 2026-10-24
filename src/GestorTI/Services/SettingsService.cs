@@ -87,7 +87,40 @@ public sealed class SettingsService
         var bytes = Encoding.UTF8.GetBytes(plain);
         if (OperatingSystem.IsWindows())
             return "dpapi:" + Convert.ToBase64String(ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser));
-        return "plain:" + Convert.ToBase64String(bytes); // só para dev em Linux/macOS
+        return "aes:" + ProtegerComChave(bytes); // Linux/macOS: AES-GCM com chave só do usuário
+    }
+
+    // ---- Linux/macOS: chave aleatória em arquivo com permissão 0600 (só o dono lê) ----
+    private static string ArquivoChave => Path.Combine(AppPaths.Root, ".chave");
+
+    private static byte[] ObterChave()
+    {
+        if (File.Exists(ArquivoChave)) return File.ReadAllBytes(ArquivoChave);
+        Directory.CreateDirectory(AppPaths.Root);
+        var chave = RandomNumberGenerator.GetBytes(32);
+        File.WriteAllBytes(ArquivoChave, chave);
+        try { File.SetUnixFileMode(ArquivoChave, UnixFileMode.UserRead | UnixFileMode.UserWrite); } catch { }
+        return chave;
+    }
+
+    private static string ProtegerComChave(byte[] dados)
+    {
+        var nonce = RandomNumberGenerator.GetBytes(12);
+        var cifrado = new byte[dados.Length];
+        var tag = new byte[16];
+        using var aes = new AesGcm(ObterChave(), 16);
+        aes.Encrypt(nonce, dados, cifrado, tag);
+        return Convert.ToBase64String(nonce.Concat(tag).Concat(cifrado).ToArray());
+    }
+
+    private static byte[] AbrirComChave(string b64)
+    {
+        var t = Convert.FromBase64String(b64);
+        var nonce = t[..12]; var tag = t[12..28]; var cifrado = t[28..];
+        var claro = new byte[cifrado.Length];
+        using var aes = new AesGcm(ObterChave(), 16);
+        aes.Decrypt(nonce, cifrado, tag, claro);
+        return claro;
     }
 
     private static string Unprotect(string stored)
@@ -100,6 +133,8 @@ public sealed class SettingsService
                 var raw = Convert.FromBase64String(stored["dpapi:".Length..]);
                 return Encoding.UTF8.GetString(ProtectedData.Unprotect(raw, null, DataProtectionScope.CurrentUser));
             }
+            if (stored.StartsWith("aes:", StringComparison.Ordinal))
+                return Encoding.UTF8.GetString(AbrirComChave(stored["aes:".Length..]));
             if (stored.StartsWith("plain:", StringComparison.Ordinal))
                 return Encoding.UTF8.GetString(Convert.FromBase64String(stored["plain:".Length..]));
         }

@@ -24,6 +24,9 @@ public static class AppPaths
     {
         get
         {
+            if (!OperatingSystem.IsWindows())
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "GestorTI-Backups");
+
             var oneDrive = Environment.GetEnvironmentVariable("OneDrive")
                            ?? Environment.GetEnvironmentVariable("OneDriveConsumer")
                            ?? Environment.GetEnvironmentVariable("OneDriveCommercial")

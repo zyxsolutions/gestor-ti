@@ -5,7 +5,7 @@ namespace GestorTI.Services;
 
 /// <summary>
 /// Atualização automática via GitHub Releases (Velopack).
-/// Só funciona no app INSTALADO pelo Setup.exe; rodando via "dotnet run" não há atualização.
+/// Só funciona no app INSTALADO (Setup.exe no Windows, AppImage no Linux); rodando via "dotnet run" não há atualização.
 /// Repositório público: não precisa de token. Se um dia ficar privado, passe um token no GithubSource.
 /// </summary>
 public sealed class UpdateService

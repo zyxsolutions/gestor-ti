@@ -5,7 +5,14 @@
 > ### ⬇️ [Baixar o instalador (Windows)](https://github.com/zyxsolutions/gestor-ti/releases/latest/download/GestorTI-win-Setup.exe)
 > Se o link direto não abrir, use a [página de versões](https://github.com/zyxsolutions/gestor-ti/releases/latest) e baixe o arquivo `GestorTI-win-Setup.exe`. Depois da primeira instalação o app se atualiza sozinho.
 
-Sistema desktop (Windows) para gestão de uma operação de TI como MEI: clientes, contratos recorrentes (SLA), cobranças, fluxo de caixa e emissão de NFS-e. Inspirado conceitualmente na usabilidade do Asaas (layout limpo, menu lateral, cartões de indicadores) — sem usar marca, código ou ativos do Asaas.
+> ### 🐧 Linux
+> Instalação por um comando (Debian/Ubuntu/Fedora e outras distros com AppImage):
+> ```
+> curl -fsSL https://raw.githubusercontent.com/zyxsolutions/gestor-ti/main/install-linux.sh | bash
+> ```
+> Ou baixe o arquivo `.AppImage` na [página de versões](https://github.com/zyxsolutions/gestor-ti/releases/latest), dê permissão (`chmod +x`) e execute. Seus dados ficam em `~/.local/share/GestorTI-Dados`. O app se atualiza sozinho como no Windows.
+
+Sistema desktop (Windows e Linux) para gestão de uma operação de TI como MEI: clientes, contratos recorrentes (SLA), cobranças, fluxo de caixa e emissão de NFS-e. Inspirado conceitualmente na usabilidade do Asaas (layout limpo, menu lateral, cartões de indicadores) — sem usar marca, código ou ativos do Asaas.
 
 - **UI:** Avalonia 11 (XAML, tema Fluent) · MVVM com CommunityToolkit.Mvvm
 - **Dados:** SQLite local + EF Core 8 (`%LOCALAPPDATA%\GestorTI-Dados\gestor.db`)

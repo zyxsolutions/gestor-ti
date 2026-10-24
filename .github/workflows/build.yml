@@ -75,3 +75,60 @@ jobs:
           --releaseName "ZYX Core v${{ env.APP_VERSION }}"
           --tag v${{ env.APP_VERSION }}
           --token ${{ secrets.GITHUB_TOKEN }}
+
+  # Linux: gera um AppImage (um arquivo só, roda com duplo clique) e anexa à MESMA release do Windows.
+  # Roda depois do job do Windows; se falhar, a release do Windows não é afetada.
+  linux:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar pacotes
+        run: dotnet restore src/GestorTI/GestorTI.csproj -r linux-x64 -p:PublishReadyToRun=true
+
+      - name: Publicar
+        run: >
+          dotnet publish src/GestorTI/GestorTI.csproj
+          -c Release
+          -r linux-x64
+          --self-contained true
+          --no-restore
+          -p:PublishReadyToRun=true
+          -p:DebugType=none
+          -p:Version=${{ env.APP_VERSION }}
+          -o publish-linux
+
+      - name: Instalar vpk
+        run: dotnet tool install -g vpk --version ${{ env.VPK_VERSION }}
+
+      - name: Baixar releases anteriores
+        continue-on-error: true
+        run: vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Empacotar (AppImage)
+        run: >
+          vpk pack
+          --packId GestorTI
+          --packTitle "ZYX Core"
+          --icon brand/logo-mark-512.png
+          --packVersion ${{ env.APP_VERSION }}
+          --packDir publish-linux
+          --mainExe GestorTI
+          --runtime linux-x64
+
+      - name: Anexar à release
+        run: >
+          vpk upload github
+          --repoUrl https://github.com/${{ github.repository }}
+          --merge
+          --publish
+          --releaseName "ZYX Core v${{ env.APP_VERSION }}"
+          --tag v${{ env.APP_VERSION }}
+          --token ${{ secrets.GITHUB_TOKEN }}
