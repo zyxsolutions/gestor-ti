@@ -81,7 +81,13 @@
 
   <!-- Tela de login por cima de tudo até alguém entrar -->
   <Border IsVisible="{Binding NaoAutenticado}" Background="{DynamicResource CardBrush}">
-    <views:LoginView DataContext="{Binding Login}"/>
+    <Grid>
+      <views:LoginView DataContext="{Binding Login}"/>
+      <Button Classes="primary" Background="#12B76A" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+              Margin="72,0,0,72" Padding="18,11" Content="{Binding TextoAtualizacao}"
+              IsVisible="{Binding AtualizacaoDisponivel}" IsEnabled="{Binding !Atualizando}"
+              Command="{Binding AtualizarAppCommand}"/>
+    </Grid>
   </Border>
   </Grid>
 </Window>

@@ -110,7 +110,12 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsConta => PaginaAtiva == "Conta";
 
     /// <summary>Chamado ao abrir a janela: prepara a tela de login.</summary>
-    public Task IniciarAsync() => Login.PrepararAsync();
+    public async Task IniciarAsync()
+    {
+        _jaVerificouAtualizacao = true;
+        _ = VerificarAtualizacaoAsync(); // já na tela de login, em segundo plano
+        await Login.PrepararAsync();
+    }
 
     private async void OnLoginConcluido(Usuario usuario)
     {
@@ -124,7 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!_jaVerificouAtualizacao)
         {
             _jaVerificouAtualizacao = true;
-            _ = VerificarAtualizacaoAsync(); // em segundo plano, não atrasa a abertura
+            _ = VerificarAtualizacaoAsync();
         }
         await NavegarAsync("Dashboard");
     }
